@@ -182,14 +182,9 @@ function renderProducts() {
         </div>
         <h3 class="product-title">${product.name}</h3>
         
-        <div class="product-price-row">
-          <span class="old-price">${formatCurrency(product.oldPrice)}</span>
-          ${discountPercent > 0 ? `<span class="discount-tag">↓ ${discountPercent}%</span>` : ''}
-        </div>
-
-        <div class="club-price-pill">
-          <span class="club-price-val">${formatCurrency(product.clubPrice)}</span>
-          <span class="club-label-tag">Atacado</span>
+        <div class="product-price-row" style="margin: 8px 0 12px; display: flex; align-items: baseline; gap: 6px;">
+          <span style="font-size: 20px; font-weight: 900; color: var(--primary-imperial);">${formatCurrency(product.price)}</span>
+          <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">/ ${product.unit || 'un'}</span>
         </div>
 
         <div class="product-actions">
@@ -271,7 +266,7 @@ function updateCartUI(state) {
 
   // Update mobile bottom bar
   if (mobileCartCount) mobileCartCount.textContent = `${state.totalItemsCount} ${state.totalItemsCount === 1 ? 'item' : 'itens'}`;
-  if (mobileCartTotal) mobileCartTotal.textContent = formatCurrency(state.totalClub);
+  if (mobileCartTotal) mobileCartTotal.textContent = formatCurrency(state.total);
 
   // Update Drawer Totals
   if (drawerFreteVal) {
@@ -279,15 +274,14 @@ function updateCartUI(state) {
       drawerFreteVal.textContent = formatCurrency(state.shippingCost);
     } else if (state.deliveryType === 'pickup') {
       drawerFreteVal.textContent = 'Retirar (Grátis)';
-    } else if (state.subtotalClub >= 150) {
+    } else if (state.subtotal >= 150) {
       drawerFreteVal.textContent = 'Grátis (Acima R$150)';
     } else {
       drawerFreteVal.textContent = 'A calcular no checkout';
     }
   }
 
-  if (drawerTotalVal) drawerTotalVal.textContent = formatCurrency(state.totalStandard);
-  if (drawerClubTotalVal) drawerClubTotalVal.textContent = formatCurrency(state.totalClub);
+  if (drawerTotalVal) drawerTotalVal.textContent = formatCurrency(state.total);
 
   // Render Drawer Items (Print 2 style)
   if (!cartDrawerItems) return;
@@ -315,19 +309,14 @@ function updateCartUI(state) {
     const itemEl = document.createElement('div');
     itemEl.className = 'cart-item-card';
 
-    const itemDiscount = (item.oldPrice && item.oldPrice > item.clubPrice)
-      ? Math.round(((item.oldPrice - item.clubPrice) / item.oldPrice) * 100)
-      : 0;
-
     itemEl.innerHTML = `
       <img src="${item.image}" alt="${item.name}" class="cart-item-img" />
       <div class="cart-item-details">
         <span class="cart-item-category">${item.category}</span>
         <h4 class="cart-item-title">${item.name}</h4>
         
-        <div class="cart-item-price-pill">
-          <span>${formatCurrency(item.clubPrice)}</span>
-          ${itemDiscount > 0 ? `<small>(${itemDiscount}% off)</small>` : ''}
+        <div class="cart-item-price-pill" style="background: none; padding: 0; color: var(--primary-imperial); font-size: 14px; font-weight: 800;">
+          <span>${formatCurrency(item.price)}</span>
         </div>
 
         <div class="cart-item-bottom">

@@ -16,18 +16,16 @@ class CartStore {
     rawItems.forEach(item => {
       if (!item || !item.id) return;
       const masterProduct = products.find(p => p.id === item.id);
-      if (!masterProduct) return; // Remove produto inexistente / forjado
+      if (!masterProduct) return;
 
       const cleanQty = Math.max(1, Math.min(999, Math.floor(Number(item.qty) || 1)));
       
-      // Força os preços e dados diretamente da tabela oficial de produtos (anti-tamper)
       validItems.push({
         id: masterProduct.id,
         name: masterProduct.name,
         category: masterProduct.category,
         image: masterProduct.image,
-        oldPrice: masterProduct.oldPrice,
-        clubPrice: masterProduct.clubPrice,
+        price: masterProduct.price,
         unit: masterProduct.unit,
         qty: cleanQty
       });
@@ -69,8 +67,7 @@ class CartStore {
         name: product.name,
         category: product.category,
         image: product.image,
-        oldPrice: product.oldPrice,
-        clubPrice: product.clubPrice,
+        price: product.price,
         unit: product.unit,
         qty: cleanQty
       });
@@ -121,48 +118,36 @@ class CartStore {
   }
 
   getState() {
-    // Revalidação contínua contra adulteração
     this.items = this.sanitizeItems(this.items);
 
-    let subtotalStandard = 0;
-    let subtotalClub = 0;
+    let subtotal = 0;
     let totalItemsCount = 0;
 
     this.items.forEach(item => {
-      // Sempre recalcula baseado na tabela oficial
       const masterProduct = products.find(p => p.id === item.id);
-      const oldPrice = masterProduct ? masterProduct.oldPrice : item.oldPrice;
-      const clubPrice = masterProduct ? masterProduct.clubPrice : item.clubPrice;
+      const price = masterProduct ? masterProduct.price : item.price;
 
-      subtotalStandard += oldPrice * item.qty;
-      subtotalClub += clubPrice * item.qty;
+      subtotal += price * item.qty;
       totalItemsCount += item.qty;
     });
 
-    // Precisão decimal
-    subtotalStandard = Math.round(subtotalStandard * 100) / 100;
-    subtotalClub = Math.round(subtotalClub * 100) / 100;
+    subtotal = Math.round(subtotal * 100) / 100;
 
     let shippingCost = 0;
     if (this.deliveryType === 'receive' && this.shipping) {
-      shippingCost = (subtotalClub >= 150) ? 0 : Math.max(0, Number(this.shipping.shippingValue || 0));
+      shippingCost = (subtotal >= 150) ? 0 : Math.max(0, Number(this.shipping.shippingValue || 0));
     }
 
-    const totalStandard = Math.round((subtotalStandard + shippingCost) * 100) / 100;
-    const totalClub = Math.round((subtotalClub + shippingCost) * 100) / 100;
-    const savings = Math.max(0, Math.round((totalStandard - totalClub) * 100) / 100);
+    const total = Math.round((subtotal + shippingCost) * 100) / 100;
 
     return {
       items: this.items,
       totalItemsCount,
-      subtotalStandard,
-      subtotalClub,
+      subtotal,
       shippingCost,
       shipping: this.shipping,
       deliveryType: this.deliveryType,
-      totalStandard,
-      totalClub,
-      savings
+      total
     };
   }
 }

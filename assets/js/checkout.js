@@ -72,28 +72,28 @@ function renderSummary(state) {
     row.className = 'summary-item-row';
     row.innerHTML = `
       <span class="summary-item-title">${item.qty}x ${item.name}</span>
-      <strong>${formatCurrency(item.clubPrice * item.qty)}</strong>
+      <strong>${formatCurrency(item.price * item.qty)}</strong>
     `;
     checkoutItemsList.appendChild(row);
   });
 
-  if (checkoutSubtotal) checkoutSubtotal.textContent = formatCurrency(state.subtotalClub);
+  if (checkoutSubtotal) checkoutSubtotal.textContent = formatCurrency(state.subtotal);
   
   if (checkoutShipping) {
     if (state.deliveryType === 'pickup') {
       checkoutShipping.textContent = 'Retirar (Grátis)';
     } else if (state.shippingCost > 0) {
       checkoutShipping.textContent = formatCurrency(state.shippingCost);
-    } else if (state.subtotalClub >= 150) {
+    } else if (state.subtotal >= 150) {
       checkoutShipping.textContent = 'Grátis (Acima R$150)';
     } else {
       checkoutShipping.textContent = 'Digite seu CEP';
     }
   }
 
-  if (checkoutTotal) checkoutTotal.textContent = formatCurrency(state.totalStandard);
-  if (checkoutClubTotal) checkoutClubTotal.textContent = formatCurrency(state.totalClub);
+  if (checkoutTotal) checkoutTotal.textContent = formatCurrency(state.total);
 }
+
 
 function setupDeliveryTabs() {
   if (!tabReceive || !tabPickup) return;
@@ -351,7 +351,7 @@ function setupFinalizeOrder() {
     }
 
     // Recalcula totais usando apenas a fonte protegida
-    const itemsText = state.items.map(i => `• ${i.qty}x ${sanitizeInput(i.name)} (${formatCurrency(i.clubPrice * i.qty)})`).join('\n');
+    const itemsText = state.items.map(i => `• ${i.qty}x ${sanitizeInput(i.name)} (${formatCurrency(i.price * i.qty)})`).join('\n');
     const deliveryMethodText = state.deliveryType === 'pickup' 
       ? 'Retirar no Depósito da Confeitaria (Grátis)' 
       : `${currentShippingInfo?.courier || 'Entrega'} - ${state.shippingCost > 0 ? formatCurrency(state.shippingCost) : 'Grátis'}`;
@@ -386,9 +386,9 @@ ${eBox} *ITENS DO PEDIDO:*
 ${itemsText}
 
 ----------------------------------------
-${eCart} *Subtotal:* ${formatCurrency(state.subtotalClub)}
+${eCart} *Subtotal:* ${formatCurrency(state.subtotal)}
 ${eTruck} *Entrega:* ${deliveryMethodText}
-${eMoney} *TOTAL DO PEDIDO:* ${formatCurrency(state.totalClub)}
+${eMoney} *TOTAL DO PEDIDO:* ${formatCurrency(state.total)}
 ${eCard} *Forma de Pagamento:* ${paymentLabel}
 ${ePin} *Endereço:* ${addressText}
 ----------------------------------------
@@ -411,9 +411,9 @@ _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
       cep: cep || '',
       items: state.items,
       itemsText: itemsText,
-      subtotal: state.subtotalClub,
+      subtotal: state.subtotal,
       shippingCost: state.deliveryType === 'pickup' ? 0 : state.shippingCost,
-      total: state.totalClub,
+      total: state.total,
       paymentMethod: paymentLabel,
       createdAt: new Date().toISOString()
     };
