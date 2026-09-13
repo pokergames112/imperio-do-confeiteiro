@@ -2,6 +2,7 @@ import { cart } from './cart.js';
 import { consultCep, shippingRules } from './shipping.js';
 import { generatePixPayload } from './pix.js';
 import { formatCurrency } from './app.js';
+import { saveOrderToSupabase } from './supabase.js';
 
 // Elements
 const checkoutItemsList = document.getElementById('checkoutItemsList');
@@ -275,31 +276,50 @@ ${ePin} *Endereço:* ${addressText}
 ----------------------------------------
 _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
 
-    // Save lead/order simulation in localStorage for CRM
+    // Generate unique order code
+    const orderCode = `IC-${Math.floor(1000 + Math.random() * 9000)}`;
+
     const orderData = {
       id: Date.now(),
+      code: orderCode,
       name,
       phone,
       email,
-      items: state.items,
-      total: state.totalClub,
-      payment: paymentLabel,
+      cpf: inputCpf?.value || null,
+      deliveryType: state.deliveryType === 'pickup' ? 'Retirada no Depósito' : 'Entrega',
       address: addressText,
+      neighborhood: inputNeighborhood?.value || '',
+      city: inputCity?.value || 'Recife - PE',
+      cep: cepInput?.value || '',
+      items: state.items,
+      itemsText: itemsText,
+      subtotal: state.subtotalClub,
+      shippingCost: state.deliveryType === 'pickup' ? 0 : state.shippingCost,
+      total: state.totalClub,
+      paymentMethod: paymentLabel,
       createdAt: new Date().toISOString()
     };
 
+    // Feedback visual no botão
+    btnFinalizeOrder.disabled = true;
+    btnFinalizeOrder.innerHTML = '<span>Salvando Pedido...</span>';
+
+    // Salva no Supabase em segundo plano
+    saveOrderToSupabase(orderData).catch(err => console.error('Erro supabase:', err));
+
+    // Salva na sessão e no histórico local
+    sessionStorage.setItem('current_order', JSON.stringify(orderData));
     const ordersHistory = JSON.parse(localStorage.getItem('imperio_orders_crm') || '[]');
     ordersHistory.push(orderData);
     localStorage.setItem('imperio_orders_crm', JSON.stringify(ordersHistory));
 
-    // WhatsApp Oficial da Império do Confeiteiro (extraído das conversas)
-    const storeWhatsAppNumber = '5581989859211';
-    const whatsappUrl = `https://wa.me/${storeWhatsAppNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-
-    // Clear cart and redirect to WhatsApp
+    // Limpa o carrinho
     cart.clear();
-    alert('Pedido realizado com sucesso! Você será redirecionado para o WhatsApp do Império do Confeiteiro.');
-    window.location.href = whatsappUrl;
+
+    // Redireciona para a Tela de Sucesso do Pedido
+    setTimeout(() => {
+      window.location.href = 'pedido-confirmado.html';
+    }, 400);
   });
 }
 
