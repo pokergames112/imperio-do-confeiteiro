@@ -142,36 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (timerEl) timerEl.textContent = `Expira em: ${m}:${s}`;
     }, 1000);
 
-    // Botão Ativo de Verificação de Pagamento
-    const btnCheck = document.getElementById('btnCheckPaymentNow');
-    const checkSpinner = document.getElementById('checkSpinner');
-    const checkBtnText = document.getElementById('checkBtnText');
-    const feedback = document.getElementById('checkStatusFeedback');
 
-    if (btnCheck) {
-      btnCheck.addEventListener('click', async () => {
-        if (isPaymentApproved) return;
-
-        if (checkSpinner) checkSpinner.style.display = 'inline-block';
-        if (checkBtnText) checkBtnText.textContent = 'Consultando Banco de Dados...';
-        if (feedback) feedback.textContent = 'Verificando confirmação do Pix...';
-
-        const result = await checkOrderStatus(orderCode);
-        
-        setTimeout(() => {
-          if (checkSpinner) checkSpinner.style.display = 'none';
-
-          if (result.success && (result.status.toLowerCase().includes('pago') || result.status.toLowerCase().includes('aprovado'))) {
-            markAsApproved();
-          } else {
-            if (checkBtnText) checkBtnText.textContent = '🔍 Verificar Novamente';
-            if (feedback) {
-              feedback.innerHTML = '<span style="color: #b45309; font-weight: 700;">Ainda não identificado. Se já pagou, clique no botão verde abaixo para enviar o comprovante no WhatsApp!</span>';
-            }
-          }
-        }, 800);
-      });
-    }
 
     // Polling Automático em Segundo Plano (a cada 4 segundos)
     const autoPoll = setInterval(async () => {
