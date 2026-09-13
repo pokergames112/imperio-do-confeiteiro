@@ -1,6 +1,5 @@
 import { generatePixPayload } from './pix.js';
 import { formatCurrency } from './app.js';
-import { checkOrderStatus } from './supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const orderJson = sessionStorage.getItem('current_order') || localStorage.getItem('last_placed_order');
@@ -127,10 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerEl = document.getElementById('pixTimer');
     let timeLeft = 600; // 10 minutos em segundos
     const timerInterval = setInterval(() => {
-      if (isPaymentApproved) {
-        clearInterval(timerInterval);
-        return;
-      }
       timeLeft--;
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
@@ -141,21 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const s = String(timeLeft % 60).padStart(2, '0');
       if (timerEl) timerEl.textContent = `Expira em: ${m}:${s}`;
     }, 1000);
-
-
-
-    // Polling Automático em Segundo Plano (a cada 4 segundos)
-    const autoPoll = setInterval(async () => {
-      if (isPaymentApproved) {
-        clearInterval(autoPoll);
-        return;
-      }
-      const res = await checkOrderStatus(orderCode);
-      if (res.success && (res.status.toLowerCase().includes('pago') || res.status.toLowerCase().includes('aprovado'))) {
-        markAsApproved();
-        clearInterval(autoPoll);
-      }
-    }, 4000);
 
   } else if (order.paymentMethod.toLowerCase().includes('entrega') || order.paymentMethod.toLowerCase().includes('maquininha')) {
     if (pixBox) pixBox.style.display = 'none';
