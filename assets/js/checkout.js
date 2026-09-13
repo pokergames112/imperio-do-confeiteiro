@@ -388,38 +388,27 @@ function setupFinalizeOrder() {
       ? 'Pix (Chave gerada no site)' 
       : (selectedPayment === 'card_delivery' ? 'Cartão na Entrega (Maquininha)' : 'Cartão de Crédito');
 
-    const eCake = '\u{1F370}';
-    const eUser = '\u{1F464}';
-    const ePhone = '\u{1F4F1}';
-    const eMail = '\u{1F4E7}';
-    const eBox = '\u{1F4E6}';
-    const eCart = '\u{1F6D2}';
-    const eTruck = '\u{1F69A}';
-    const eMoney = '\u{1F4B0}';
-    const eCard = '\u{1F4B3}';
-    const ePin = '\u{1F4CD}';
-
     // Gerador de código de pedido único
     const orderCode = `IC-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const whatsappMessage = 
-`${eCake} *NOVO PEDIDO #${orderCode} - IMPÉRIO DO CONFEITEIRO*
+`*NOVO PEDIDO #${orderCode} - IMPÉRIO DO CONFEITEIRO*
 ----------------------------------------
-${eUser} *Cliente:* ${name}
-${ePhone} *WhatsApp:* ${phone}
-${eMail} *E-mail:* ${email || 'Não informado'}
+*Cliente:* ${name}
+*WhatsApp:* ${phone}
+*E-mail:* ${email || 'Não informado'}
 
-${eBox} *ITENS DO PEDIDO:*
+*ITENS DO PEDIDO:*
 ${itemsText}
 
 ----------------------------------------
-${eCart} *Subtotal:* ${formatCurrency(state.subtotal)}
-${eTruck} *Entrega:* ${deliveryMethodText}
-${eMoney} *TOTAL DO PEDIDO:* ${formatCurrency(state.total)}
-${eCard} *Forma de Pagamento:* ${paymentLabel}
-${ePin} *Endereço:* ${addressText}
+*Subtotal:* ${formatCurrency(state.subtotal)}
+*Entrega:* ${deliveryMethodText}
+*TOTAL DO PEDIDO:* ${formatCurrency(state.total)}
+*Forma de Pagamento:* ${paymentLabel}
+*Endereço de Entrega:* ${addressText}
 ----------------------------------------
-_Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
+Pedido registrado pelo Catálogo Digital Império do Confeiteiro`;
 
     const orderData = {
       id: Date.now(),

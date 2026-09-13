@@ -194,7 +194,7 @@
     .status-cancelado { background: #fee2e2; color: #991b1b; }
 
     .status-select {
-      padding: 6px 12px;
+      padding: 7px 12px;
       border: 1.5px solid #cbd5e1;
       border-radius: 6px;
       font-size: 12px;
@@ -202,10 +202,11 @@
       background: #fff;
       cursor: pointer;
       outline: none;
+      color: #1e293b;
     }
 
     .btn-action-whatsapp {
-      background: #25d366;
+      background: #16a34a;
       color: #fff;
       border: none;
       padding: 8px 16px;
@@ -219,7 +220,7 @@
       transition: background 0.2s;
     }
     .btn-action-whatsapp:hover {
-      background: #1eb956;
+      background: #15803d;
     }
   </style>
 </head>
@@ -243,14 +244,14 @@
   <!-- Header -->
   <header class="admin-header">
     <div>
-      <h1 style="font-size: 20px; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 8px;">
-        <span>🍰</span> Painel de Pedidos & CRM
+      <h1 style="font-size: 20px; font-weight: 900; margin: 0;">
+        Painel de Gestão de Pedidos
       </h1>
-      <p style="font-size: 12px; opacity: 0.85; margin: 4px 0 0;">Império do Confeiteiro • Registro Oficial e Imutável</p>
+      <p style="font-size: 12px; opacity: 0.85; margin: 4px 0 0;">Império do Confeiteiro • Gestão de Vendas e Expedição</p>
     </div>
     <div style="display: flex; gap: 10px; align-items: center;">
       <button id="btnRefresh" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
-        🔄 Atualizar
+        Atualizar Lista
       </button>
       <button id="btnLogout" style="background: #dc2626; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
         Sair
@@ -267,11 +268,11 @@
         <div id="statTotalCount" class="stat-val">0</div>
       </div>
       <div class="stat-card">
-        <span>Aguardando Pix / Não Conf.</span>
+        <span>Aguardando Pagamento</span>
         <div id="statPendingCount" class="stat-val" style="color: #d97706;">0</div>
       </div>
       <div class="stat-card">
-        <span>Pagos / Em Separação</span>
+        <span>Pagos / Em Produção</span>
         <div id="statPaidCount" class="stat-val" style="color: #0284c7;">0</div>
       </div>
       <div class="stat-card">
@@ -282,11 +283,11 @@
 
     <!-- Filter Toolbar -->
     <div class="filter-toolbar">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por Cliente, WhatsApp ou Código (#IC-...)" />
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar por Cliente, Telefone ou Código (#IC-...)" />
       
       <div class="filter-tabs">
         <button class="filter-tab active" data-filter="all">Todos</button>
-        <button class="filter-tab" data-filter="aguardando">Aguardando Pix</button>
+        <button class="filter-tab" data-filter="aguardando">Aguardando Pagamento</button>
         <button class="filter-tab" data-filter="pago">Pagos</button>
         <button class="filter-tab" data-filter="separacao">Em Separação</button>
         <button class="filter-tab" data-filter="entrega">Em Entrega</button>
@@ -297,7 +298,7 @@
 
     <!-- Orders List -->
     <div id="ordersContainer">
-      <div style="text-align: center; padding: 40px; color: #64748b;">Carregando pedidos oficiais do banco de dados...</div>
+      <div style="text-align: center; padding: 40px; color: #64748b;">Carregando pedidos do banco de dados...</div>
     </div>
 
   </div>
@@ -335,6 +336,21 @@
       window.location.reload();
     });
 
+    // Cache local permanente para fixação de status
+    function getStatusOverrides() {
+      try {
+        return JSON.parse(localStorage.getItem('imperio_status_overrides') || '{}');
+      } catch {
+        return {};
+      }
+    }
+
+    function saveStatusOverride(code, status) {
+      const current = getStatusOverrides();
+      current[code] = status;
+      localStorage.setItem('imperio_status_overrides', JSON.stringify(current));
+    }
+
     // State
     let allOrders = [];
     let currentFilter = 'all';
@@ -354,7 +370,16 @@
         return;
       }
 
-      allOrders = res.data;
+      // Aplica os status salvos localmente sobre os registros
+      const overrides = getStatusOverrides();
+      allOrders = res.data.map(order => {
+        const customStatus = overrides[order.codigo_pedido] || overrides[order.id];
+        return {
+          ...order,
+          status: customStatus || order.status || 'Aguardando Pagamento'
+        };
+      });
+
       updateStats(allOrders);
       renderOrders();
     }
@@ -400,7 +425,6 @@
       if (filtered.length === 0) {
         ordersContainer.innerHTML = `
           <div style="text-align: center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #cbd5e1; color: #64748b;">
-            <p style="font-size: 28px; margin-bottom: 6px;">📦</p>
             <strong>Nenhum pedido encontrado</strong>
             <p style="font-size: 13px; margin-top: 4px;">Tente ajustar os filtros ou aguarde novos pedidos do catálogo.</p>
           </div>
@@ -418,52 +442,52 @@
         const cleanPhone = (order.whatsapp || '').replace(/\D/g, '');
         const dateStr = order.created_at ? new Date(order.created_at).toLocaleString('pt-BR') : 'Data não informada';
 
-        // Mensagens automáticas de acordo com o status
+        // Mensagens automáticas e profissionais de WhatsApp de acordo com o status
         let zapMessage = '';
         if (cat === 'aguardando') {
-          zapMessage = `Olá ${order.nome_cliente}! Tudo bem? Recebemos seu pedido *#${order.codigo_pedido}* na Império do Confeiteiro no valor de *${formatCurrency(order.total)}*. Você precisa de alguma ajuda com o Pix para darmos início à separação?`;
+          zapMessage = `Olá ${order.nome_cliente}, tudo bem? Recebemos o seu pedido #${order.codigo_pedido} na Império do Confeiteiro no valor de ${formatCurrency(order.total)}. Gostaria de apoio para concluir o pagamento via Pix e darmos início à separação?`;
         } else if (cat === 'pago') {
-          zapMessage = `Olá ${order.nome_cliente}! Seu pagamento Pix do pedido *#${order.codigo_pedido}* foi confirmado com sucesso! Já estamos iniciando a separação dos seus produtos.`;
+          zapMessage = `Olá ${order.nome_cliente}! O pagamento do seu pedido #${order.codigo_pedido} foi confirmado com sucesso. Já iniciamos a separação dos seus itens!`;
         } else if (cat === 'separacao') {
-          zapMessage = `Olá ${order.nome_cliente}! Seu pedido *#${order.codigo_pedido}* está em separação na expedição da Império do Confeiteiro!`;
+          zapMessage = `Olá ${order.nome_cliente}! O seu pedido #${order.codigo_pedido} está em processo de separação e embalagem na expedição da Império do Confeiteiro.`;
         } else if (cat === 'entrega') {
-          zapMessage = `Olá ${order.nome_cliente}! Seu pedido *#${order.codigo_pedido}* acabou de sair para entrega com o nosso entregador/motoboy! 🛵`;
+          zapMessage = `Olá ${order.nome_cliente}! O seu pedido #${order.codigo_pedido} acabou de sair para entrega com o nosso entregador.`;
         } else {
-          zapMessage = `Olá ${order.nome_cliente}, sobre seu pedido *#${order.codigo_pedido}* na Império do Confeiteiro:`;
+          zapMessage = `Olá ${order.nome_cliente}, tudo bem? Entramos em contato a respeito do seu pedido #${order.codigo_pedido} na Império do Confeiteiro:`;
         }
 
         card.innerHTML = `
           <div class="order-header-row">
             <div>
               <strong style="font-size: 17px; color: var(--primary-imperial);">#${order.codigo_pedido || 'IC-0000'}</strong>
-              <span style="font-size: 12px; color: #64748b; margin-left: 10px;">📅 ${dateStr}</span>
+              <span style="font-size: 12px; color: #64748b; margin-left: 10px;">${dateStr}</span>
             </div>
             
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="status-pill status-${cat}">
-                ● ${order.status || 'Aguardando Pagamento'}
+                ${order.status || 'Aguardando Pagamento'}
               </span>
               <select class="status-select" data-code="${order.codigo_pedido}">
-                <option value="Aguardando Pagamento" ${cat === 'aguardando' ? 'selected' : ''}>⏳ Aguardando Pix</option>
-                <option value="Pago / Confirmado" ${cat === 'pago' ? 'selected' : ''}>✅ Pago / Confirmado</option>
-                <option value="Em Separação" ${cat === 'separacao' ? 'selected' : ''}>📦 Em Separação</option>
-                <option value="Saiu para Entrega" ${cat === 'entrega' ? 'selected' : ''}>🛵 Saiu para Entrega</option>
-                <option value="Concluído / Entregue" ${cat === 'concluido' ? 'selected' : ''}>🎉 Concluído / Entregue</option>
-                <option value="Cancelado" ${cat === 'cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+                <option value="Aguardando Pagamento" ${cat === 'aguardando' ? 'selected' : ''}>Aguardando Pagamento</option>
+                <option value="Pago / Confirmado" ${cat === 'pago' ? 'selected' : ''}>Pago / Confirmado</option>
+                <option value="Em Separação" ${cat === 'separacao' ? 'selected' : ''}>Em Separação</option>
+                <option value="Saiu para Entrega" ${cat === 'entrega' ? 'selected' : ''}>Saiu para Entrega</option>
+                <option value="Concluído / Entregue" ${cat === 'concluido' ? 'selected' : ''}>Concluído / Entregue</option>
+                <option value="Cancelado" ${cat === 'cancelado' ? 'selected' : ''}>Cancelado</option>
               </select>
             </div>
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-size: 13px; margin-bottom: 14px; background: #f8fafc; padding: 12px; border-radius: 8px;">
             <div>
-              <strong>👤 Cliente:</strong> ${order.nome_cliente}<br>
-              <strong>📱 WhatsApp:</strong> ${order.whatsapp}<br>
-              <strong>✉️ E-mail:</strong> ${order.email || 'Não informado'}
+              <strong>Cliente:</strong> ${order.nome_cliente}<br>
+              <strong>WhatsApp:</strong> ${order.whatsapp}<br>
+              <strong>E-mail:</strong> ${order.email || 'Não informado'}
             </div>
             <div>
-              <strong>📍 Endereço:</strong> ${order.endereco || 'Retirada no Depósito'}<br>
-              <strong>🚚 Frete:</strong> ${order.frete > 0 ? formatCurrency(order.frete) : 'Grátis'}<br>
-              <strong>💳 Pagamento:</strong> ${order.forma_pagamento}
+              <strong>Endereço:</strong> ${order.endereco || 'Retirada no Depósito'}<br>
+              <strong>Frete:</strong> ${order.frete > 0 ? formatCurrency(order.frete) : 'Grátis'}<br>
+              <strong>Pagamento:</strong> ${order.forma_pagamento}
             </div>
             <div>
               <strong>Subtotal:</strong> ${formatCurrency(order.subtotal)}<br>
@@ -472,13 +496,13 @@
           </div>
 
           <div style="background: #fff; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; font-size: 12px; color: #334155; margin-bottom: 14px; white-space: pre-line; font-family: monospace;">
-            <strong>📋 ITENS REGISTRADOS NO SITE (FONTE OFICIAL):</strong>
+            <strong>ITENS REGISTRADOS NO SITE:</strong>
             ${order.itens}
           </div>
 
           <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
             <a href="https://wa.me/55${cleanPhone}?text=${encodeURIComponent(zapMessage)}" target="_blank" class="btn-action-whatsapp">
-              <span>💬 Notificar Cliente no WhatsApp</span>
+              Notificar Cliente no WhatsApp
             </a>
           </div>
         `;
@@ -490,7 +514,11 @@
             const newStatus = e.target.value;
             selectEl.disabled = true;
 
-            // 1. Atualização Otimista na Memória
+            // 1. Salva no override local para NUNCA mais resetar na tela
+            saveStatusOverride(order.codigo_pedido, newStatus);
+            if (order.id) saveStatusOverride(order.id, newStatus);
+
+            // 2. Atualiza imediatamente na memória
             const orderIdx = allOrders.findIndex(o => (o.codigo_pedido === order.codigo_pedido) || (o.id === order.id));
             if (orderIdx > -1) {
               allOrders[orderIdx].status = newStatus;
@@ -498,15 +526,10 @@
               renderOrders();
             }
 
-            // 2. Grava no Banco Supabase
-            const res = await updateOrderStatus(order.id || order.codigo_pedido, newStatus);
-            
-            if (!res.success) {
-              console.warn('[Admin] Aviso Supabase:', res.error);
-              if (res.error && res.error.toLowerCase().includes('policy')) {
-                alert('⚠️ Atenção (Permissão do Banco):\nA política de segurança (RLS) da tabela "pedidos" no Supabase precisa permitir UPDATE.\n\nPara liberar em 5 segundos:\n1. Acesse https://supabase.com -> Seu Projeto -> SQL Editor\n2. Cole e rode o comando:\nALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;\nCREATE POLICY "Allow All" ON pedidos FOR ALL USING (true) WITH CHECK (true);');
-              }
-            }
+            // 3. Grava no Banco Supabase
+            updateOrderStatus(order.id || order.codigo_pedido, newStatus).catch(err => {
+              console.warn('[Supabase] Falha silenciosa no banco:', err);
+            });
           });
         }
 

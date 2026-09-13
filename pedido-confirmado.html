@@ -30,24 +30,23 @@
     <!-- Main Order Success Card -->
     <div class="checkout-card" style="border-top: 4px solid var(--success-checkout);">
       
-      <!-- Status Badge com Validador em Tempo Real -->
+      <!-- Status Badge -->
       <div id="statusBadgeBox" style="background: #fffbeb; border: 1.5px solid #fde68a; padding: 14px 18px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; transition: all 0.3s ease;">
         <div>
           <span id="statusBadgeTag" style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #b45309; letter-spacing: 0.5px;">Status do Pedido</span>
           <h3 id="displayOrderStatus" style="font-size: 16px; font-weight: 900; color: #92400e; margin-top: 2px;">
-            ⏳ Aguardando Pagamento Pix
+            Aguardando Pagamento Pix
           </h3>
         </div>
-        <span id="statusBadgeIcon" style="font-size: 26px;">💳</span>
       </div>
 
       <!-- Pix Box (Se a forma de pagamento for Pix) -->
       <div id="successPixBox" class="pix-simulation-box" style="margin-bottom: 24px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-          <h3 style="font-weight: 900; color: var(--primary-imperial); font-size: 17px; margin: 0;">Pague via Pix para Agilizar a Separação</h3>
+          <h3 style="font-weight: 900; color: var(--primary-imperial); font-size: 17px; margin: 0;">Pagamento via Pix</h3>
           <span id="pixTimer" style="font-size: 12px; font-weight: 800; background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: var(--radius-full);">Expira em: 09:59</span>
         </div>
-        <p style="font-size: 13px; color: var(--text-muted);">Abra o aplicativo do seu banco e escaneie o QR Code abaixo ou copie o código Pix com o valor exato travado:</p>
+        <p style="font-size: 13px; color: var(--text-muted);">Abra o aplicativo do seu banco e escaneie o QR Code abaixo ou copie o código Pix com o valor exato:</p>
         
         <img id="successPixQr" src="" alt="QR Code Pix" class="pix-qr-img" style="width: 210px; height: 210px; margin: 14px auto;" />
         
@@ -59,10 +58,9 @@
 
       <!-- Card on Delivery Box (Se a forma de pagamento for Cartão na Entrega) -->
       <div id="successCardDeliveryBox" style="display: none; background: #eff6ff; border: 1.5px solid #93c5fd; padding: 20px; border-radius: var(--radius-sm); margin-bottom: 24px; text-align: center;">
-        <div style="font-size: 40px; margin-bottom: 8px;">💳</div>
         <h3 style="font-weight: 900; color: #1e40af; font-size: 18px; margin-bottom: 6px;">Pagamento com Cartão na Entrega</h3>
         <p style="font-size: 13px; color: #1d4ed8; max-width: 480px; margin: 0 auto 12px;">
-          Seu pedido já foi enviado para a equipe! O entregador levará a <strong>maquininha de cartão</strong> até o seu endereço no momento da entrega.
+          Seu pedido já foi enviado para a equipe. O entregador levará a <strong>maquininha de cartão</strong> até o seu endereço no momento da entrega.
         </p>
         <div style="display: inline-flex; gap: 8px; font-size: 11px; font-weight: 800; color: #1e40af;">
           <span style="background: #dbeafe; padding: 4px 10px; border-radius: var(--radius-full);">Débito</span>
@@ -73,7 +71,6 @@
 
       <!-- Online Card / Link Box (Se for Link de Pagamento) -->
       <div id="successCardOnlineBox" style="display: none; background: #faf5ff; border: 1.5px solid #d8b4fe; padding: 20px; border-radius: var(--radius-sm); margin-bottom: 24px; text-align: center;">
-        <div style="font-size: 40px; margin-bottom: 8px;">🔗</div>
         <h3 style="font-weight: 900; color: #6b21a8; font-size: 18px; margin-bottom: 6px;">Link de Pagamento no WhatsApp</h3>
         <p style="font-size: 13px; color: #7e22ce; max-width: 480px; margin: 0 auto;">
           Nossa equipe da Império do Confeiteiro enviará o <strong>link de pagamento seguro</strong> diretamente no seu WhatsApp para você parcelar com tranquilidade.
@@ -112,8 +109,8 @@
 
       <!-- Customer & Address Summary -->
       <div style="font-size: 13px; line-height: 1.6; color: var(--text-title); margin-bottom: 24px; padding: 14px; background: #fafaf9; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-        <strong>👤 Dados do Cliente:</strong> <span id="successClientName">Nome</span> (<span id="successClientPhone">WhatsApp</span>)<br>
-        <strong>📍 Local de Entrega:</strong> <span id="successClientAddress">Endereço</span>
+        <strong>Dados do Cliente:</strong> <span id="successClientName">Nome</span> (<span id="successClientPhone">WhatsApp</span>)<br>
+        <strong>Local de Entrega:</strong> <span id="successClientAddress">Endereço</span>
       </div>
 
       <!-- Timeline Tracker de Acompanhamento do Pedido -->

@@ -231,37 +231,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Setup WhatsApp Action Button
   const btnWhatsApp = document.getElementById('btnOpenWhatsAppDirect');
-  const eCake = '\u{1F370}';
-  const eUser = '\u{1F464}';
-  const ePhone = '\u{1F4F1}';
-  const eMail = '\u{1F4E7}';
-  const eBox = '\u{1F4E6}';
-  const eCart = '\u{1F6D2}';
-  const eTruck = '\u{1F69A}';
-  const eMoney = '\u{1F4B0}';
-  const eCard = '\u{1F4B3}';
-  const ePin = '\u{1F4CD}';
-
   const itemsText = (order.items || []).map(i => `• ${i.qty}x ${i.name} (${formatCurrency((i.price || 0) * i.qty)})`).join('\n');
 
   const whatsappMessage = 
-`${eCake} *PEDIDO #${orderCode} - IMPÉRIO DO CONFEITEIRO*
+`*PEDIDO #${orderCode} - IMPÉRIO DO CONFEITEIRO*
 ----------------------------------------
-${eUser} *Cliente:* ${order.name}
-${ePhone} *WhatsApp:* ${order.phone}
-${eMail} *E-mail:* ${order.email || 'Não informado'}
+*Cliente:* ${order.name}
+*WhatsApp:* ${order.phone}
+*E-mail:* ${order.email || 'Não informado'}
 
-${eBox} *ITENS DO PEDIDO:*
+*ITENS DO PEDIDO:*
 ${itemsText}
 
 ----------------------------------------
-${eCart} *Subtotal:* ${formatCurrency(order.subtotal)}
-${eTruck} *Entrega:* ${order.shippingCost > 0 ? formatCurrency(order.shippingCost) : 'Grátis'}
-${eMoney} *TOTAL DO PEDIDO:* ${formatCurrency(order.total)}
-${eCard} *Forma de Pagamento:* ${order.paymentMethod}
-${ePin} *Endereço:* ${order.address}
+*Subtotal:* ${formatCurrency(order.subtotal)}
+*Entrega:* ${order.shippingCost > 0 ? formatCurrency(order.shippingCost) : 'Grátis'}
+*TOTAL DO PEDIDO:* ${formatCurrency(order.total)}
+*Forma de Pagamento:* ${order.paymentMethod}
+*Endereço de Entrega:* ${order.address}
 ----------------------------------------
-_Pedido registrado e salvo no sistema da Império do Confeiteiro_`;
+Pedido registrado pelo Catálogo Digital Império do Confeiteiro`;
 
   // Número de WhatsApp para teste (Igor - PRIME RANK)
   // Quando for para produção final com a cliente, trocar de volta para '5581989859211'
