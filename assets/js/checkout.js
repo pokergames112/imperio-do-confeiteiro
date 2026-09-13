@@ -109,6 +109,19 @@ function renderSummary(state) {
 function setupDeliveryTabs() {
   if (!tabReceive || !tabPickup) return;
 
+  const currentType = cart.getState().deliveryType;
+  if (currentType === 'pickup') {
+    tabPickup.classList.add('active');
+    tabReceive.classList.remove('active');
+    if (deliverySectionReceive) deliverySectionReceive.style.display = 'none';
+    if (deliverySectionPickup) deliverySectionPickup.style.display = 'block';
+  } else {
+    tabReceive.classList.add('active');
+    tabPickup.classList.remove('active');
+    if (deliverySectionReceive) deliverySectionReceive.style.display = 'block';
+    if (deliverySectionPickup) deliverySectionPickup.style.display = 'none';
+  }
+
   tabReceive.addEventListener('click', () => {
     tabReceive.classList.add('active');
     tabPickup.classList.remove('active');

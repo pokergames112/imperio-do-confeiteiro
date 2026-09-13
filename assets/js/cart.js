@@ -3,7 +3,11 @@ import { products } from './products.js';
 class CartStore {
   constructor() {
     this.items = this.sanitizeItems(JSON.parse(localStorage.getItem('imperio_cart') || '[]'));
-    this.shipping = null; // Frete inicia estritamente zerado/nulo ate o usuario calcular o CEP
+    try {
+      this.shipping = JSON.parse(localStorage.getItem('imperio_shipping') || 'null');
+    } catch (e) {
+      this.shipping = null;
+    }
     this.deliveryType = localStorage.getItem('imperio_delivery_type') === 'pickup' ? 'pickup' : 'receive';
     this.listeners = [];
   }
@@ -103,6 +107,7 @@ class CartStore {
 
   clear() {
     this.items = [];
+    this.shipping = null;
     this.save();
   }
 
