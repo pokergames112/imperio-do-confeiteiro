@@ -29,7 +29,7 @@ export async function saveOrderToSupabase(orderData) {
         frete: orderData.shippingCost,
         total: orderData.total,
         forma_pagamento: orderData.paymentMethod,
-        status: 'Novo Pedido'
+        status: 'Aguardando Pagamento'
       }])
       .select();
 
@@ -45,3 +45,66 @@ export async function saveOrderToSupabase(orderData) {
     return { success: false, error: err.message };
   }
 }
+
+/**
+ * Consulta o status atualizado do pedido no Supabase em tempo real
+ */
+export async function checkOrderStatus(orderCode) {
+  try {
+    const { data, error } = await supabase
+      .from('pedidos')
+      .select('status, id, codigo_pedido, total')
+      .eq('codigo_pedido', orderCode)
+      .single();
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, status: data?.status || 'Aguardando Pagamento' };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Atualiza o status do pedido (ex: lojista aprova o Pix ou confirma recebimento)
+ */
+export async function updateOrderStatus(orderCode, newStatus) {
+  try {
+    const { data, error } = await supabase
+      .from('pedidos')
+      .update({ status: newStatus })
+      .eq('codigo_pedido', orderCode)
+      .select();
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Puxa todos os pedidos para o painel de CRM/Admin do lojista
+ */
+export async function fetchAllOrders() {
+  try {
+    const { data, error } = await supabase
+      .from('pedidos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return { success: false, error: error.message, data: [] };
+    }
+
+    return { success: true, data: data || [] };
+  } catch (err) {
+    return { success: false, error: err.message, data: [] };
+  }
+}
+
