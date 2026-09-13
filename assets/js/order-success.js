@@ -41,11 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
     itemsContainer.appendChild(row);
   });
 
-  // Pix Logic
+  // Pix Logic Oficial Banco Central
   const pixBox = document.getElementById('successPixBox');
   if (order.paymentMethod.toLowerCase().includes('pix')) {
     pixBox.style.display = 'block';
-    const pix = generatePixPayload({ amount: order.total });
+    const cleanTxid = (order.code || 'PEDIDO').replace(/[^a-zA-Z0-9]/g, '').slice(0, 25);
+    const pix = generatePixPayload({ amount: order.total, txid: cleanTxid });
     document.getElementById('successPixQr').src = pix.qrCodeUrl;
     document.getElementById('successPixKey').value = pix.payload;
 
