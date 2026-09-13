@@ -160,6 +160,12 @@ function renderProducts() {
     const card = document.createElement('div');
     card.className = 'product-card';
 
+    const salePrice = product.clubPrice || product.price || product.oldPrice || 0;
+    const hasDiscount = product.oldPrice && product.oldPrice > salePrice;
+    const discountPercent = hasDiscount
+      ? Math.round(((product.oldPrice - salePrice) / product.oldPrice) * 100)
+      : 0;
+
     const badgeHtml = product.badge ? `
       <span class="product-top-badge ${product.badgeType || ''}">${product.badge}</span>
     ` : '';
@@ -176,8 +182,13 @@ function renderProducts() {
         </div>
         <h3 class="product-title">${product.name}</h3>
         
-        <div class="product-price-row" style="margin: 8px 0 12px; display: flex; align-items: baseline; gap: 6px;">
-          <span style="font-size: 20px; font-weight: 900; color: var(--primary-imperial);">${formatCurrency(product.price)}</span>
+        <div class="product-price-row" style="margin: 4px 0 2px; min-height: 18px; display: flex; align-items: center; gap: 6px;">
+          ${hasDiscount ? `<span class="old-price">${formatCurrency(product.oldPrice)}</span>` : ''}
+          ${discountPercent > 0 ? `<span class="discount-tag">↓ ${discountPercent}%</span>` : ''}
+        </div>
+
+        <div style="margin-bottom: 12px; display: flex; align-items: baseline; gap: 6px;">
+          <span style="font-size: 20px; font-weight: 900; color: var(--primary-imperial);">${formatCurrency(salePrice)}</span>
           <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">/ ${product.unit || 'un'}</span>
         </div>
 
@@ -198,6 +209,7 @@ function renderProducts() {
         </div>
       </div>
     `;
+
 
     // Quantity events
     const qtyInput = card.querySelector(`#qty-${product.id}`);
