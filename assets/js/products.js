@@ -250,7 +250,7 @@ export const products = [
     "oldPrice": 20.79,
     "discountPercent": 14,
     "clubPrice": 17.99,
-    "clubLabel": "Preço Clube",
+    "clubLabel": "Unidade 800g",
     "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop&q=80",
     "description": "Pasta americana pronta para cobertura e modelagem de bolos e tortas finas. Não racha e é fácil de abrir.",
     "unit": "Unidade 800g",

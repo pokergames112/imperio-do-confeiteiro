@@ -399,8 +399,11 @@ function setupFinalizeOrder() {
     const eCard = '\u{1F4B3}';
     const ePin = '\u{1F4CD}';
 
+    // Gerador de código de pedido único
+    const orderCode = `IC-${Math.floor(1000 + Math.random() * 9000)}`;
+
     const whatsappMessage = 
-`${eCake} *NOVO PEDIDO - IMPÉRIO DO CONFEITEIRO*
+`${eCake} *NOVO PEDIDO #${orderCode} - IMPÉRIO DO CONFEITEIRO*
 ----------------------------------------
 ${eUser} *Cliente:* ${name}
 ${ePhone} *WhatsApp:* ${phone}
@@ -417,9 +420,6 @@ ${eCard} *Forma de Pagamento:* ${paymentLabel}
 ${ePin} *Endereço:* ${addressText}
 ----------------------------------------
 _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
-
-    // Gerador de código de pedido único
-    const orderCode = `IC-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const orderData = {
       id: Date.now(),
