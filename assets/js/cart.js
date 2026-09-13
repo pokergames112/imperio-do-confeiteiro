@@ -8,19 +8,18 @@ class CartStore {
     this.listeners = [];
   }
 
-  // Blindagem: Valida e sincroniza todos os itens com a tabela oficial de produtos
+  // Sanitização e validação matemática de todos os itens contra o catálogo oficial
   sanitizeItems(rawItems) {
     if (!Array.isArray(rawItems)) return [];
     
     const validItems = [];
     rawItems.forEach(item => {
       if (!item || !item.id) return;
-      const masterProduct = products.find(p => p.id === item.id);
+      const masterProduct = products.find(p => p.id === Number(item.id));
       if (!masterProduct) return;
 
       const cleanQty = Math.max(1, Math.min(999, Math.floor(Number(item.qty) || 1)));
-      
-      const salePrice = masterProduct.clubPrice || masterProduct.price || masterProduct.oldPrice || 0;
+      const salePrice = Number(masterProduct.price || masterProduct.clubPrice || masterProduct.oldPrice || 0);
       
       validItems.push({
         id: masterProduct.id,
@@ -28,7 +27,7 @@ class CartStore {
         category: masterProduct.category,
         image: masterProduct.image,
         price: salePrice,
-        unit: masterProduct.unit,
+        unit: masterProduct.unit || 'un',
         qty: cleanQty
       });
     });
@@ -55,12 +54,13 @@ class CartStore {
   }
 
   addItem(productId, qty = 1) {
-    const product = products.find(p => p.id === productId);
+    const numericId = Number(productId);
+    const product = products.find(p => p.id === numericId);
     if (!product) return;
 
     const cleanQty = Math.max(1, Math.min(999, Math.floor(Number(qty) || 1)));
-    const existingIndex = this.items.findIndex(item => item.id === productId);
-    const salePrice = product.clubPrice || product.price || product.oldPrice || 0;
+    const existingIndex = this.items.findIndex(item => item.id === numericId);
+    const salePrice = Number(product.price || product.clubPrice || product.oldPrice || 0);
 
     if (existingIndex > -1) {
       this.items[existingIndex].qty = Math.min(999, this.items[existingIndex].qty + cleanQty);
@@ -71,23 +71,23 @@ class CartStore {
         category: product.category,
         image: product.image,
         price: salePrice,
-        unit: product.unit,
+        unit: product.unit || 'un',
         qty: cleanQty
       });
     }
-
 
     this.save();
   }
 
   updateQty(productId, qty) {
+    const numericId = Number(productId);
     const numericQty = Math.floor(Number(qty) || 0);
     if (numericQty <= 0) {
-      this.removeItem(productId);
+      this.removeItem(numericId);
       return;
     }
     const cleanQty = Math.min(999, numericQty);
-    const item = this.items.find(i => i.id === productId);
+    const item = this.items.find(i => i.id === numericId);
     if (item) {
       item.qty = cleanQty;
       this.save();
@@ -95,7 +95,8 @@ class CartStore {
   }
 
   removeItem(productId) {
-    this.items = this.items.filter(i => i.id !== productId);
+    const numericId = Number(productId);
+    this.items = this.items.filter(i => i.id !== numericId);
     this.save();
   }
 
@@ -128,20 +129,27 @@ class CartStore {
     let totalItemsCount = 0;
 
     this.items.forEach(item => {
-      const masterProduct = products.find(p => p.id === item.id);
-      const price = masterProduct ? masterProduct.price : item.price;
-
-      subtotal += price * item.qty;
-      totalItemsCount += item.qty;
+      const price = Number(item.price || 0);
+      const qty = Number(item.qty || 1);
+      subtotal += price * qty;
+      totalItemsCount += qty;
     });
 
+    // Arredondamento decimal preciso
     subtotal = Math.round(subtotal * 100) / 100;
 
+    const isFreeShipping = subtotal >= 150.00;
     let shippingCost = 0;
-    if (this.deliveryType === 'receive' && this.shipping) {
-      shippingCost = (subtotal >= 150) ? 0 : Math.max(0, Number(this.shipping.shippingValue || 0));
+
+    if (this.deliveryType === 'pickup') {
+      shippingCost = 0;
+    } else if (isFreeShipping) {
+      shippingCost = 0;
+    } else if (this.shipping && typeof this.shipping.shippingValue === 'number') {
+      shippingCost = Math.max(0, Number(this.shipping.shippingValue));
     }
 
+    shippingCost = Math.round(shippingCost * 100) / 100;
     const total = Math.round((subtotal + shippingCost) * 100) / 100;
 
     return {
@@ -149,6 +157,7 @@ class CartStore {
       totalItemsCount,
       subtotal,
       shippingCost,
+      isFreeShipping,
       shipping: this.shipping,
       deliveryType: this.deliveryType,
       total
@@ -157,4 +166,5 @@ class CartStore {
 }
 
 export const cart = new CartStore();
+
 
