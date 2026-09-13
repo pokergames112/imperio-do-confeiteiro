@@ -175,9 +175,21 @@
 
       <!-- Drawer Summary Footer -->
       <div class="drawer-footer">
+        <!-- Frete CEP Box -->
+        <div class="drawer-cep-calc">
+          <div class="drawer-cep-calc-header">
+            <span>Calcular Frete</span>
+          </div>
+          <div class="drawer-cep-calc-input-wrap">
+            <input type="text" id="drawerCepInput" placeholder="Digite seu CEP" maxlength="9" autocomplete="postal-code" inputmode="numeric" />
+            <button type="button" id="btnDrawerCalcCep">Calcular</button>
+          </div>
+          <div id="drawerCepMsg" class="drawer-cep-msg"></div>
+        </div>
+
         <div class="drawer-summary-row frete">
           <span>Frete:</span>
-          <span id="drawerFreteVal">A calcular no checkout</span>
+          <span id="drawerFreteVal">Digite seu CEP</span>
         </div>
         
         <div class="drawer-summary-row total" style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; color: var(--primary-imperial); padding-top: 8px; border-top: 1px dashed var(--border-card); margin-bottom: 14px;">

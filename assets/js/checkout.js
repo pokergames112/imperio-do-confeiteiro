@@ -60,6 +60,17 @@ function initCheckout() {
   setupShippingEvents();
   setupPaymentEvents();
   setupFinalizeOrder();
+
+  // If CEP was already calculated in cart drawer, pre-populate checkout
+  if (state.shipping && state.shipping.cep) {
+    if (cepInput) cepInput.value = state.shipping.cep;
+    currentShippingInfo = state.shipping;
+    if (inputStreet) inputStreet.value = state.shipping.street || '';
+    if (inputNeighborhood) inputNeighborhood.value = state.shipping.neighborhood || '';
+    if (inputCity) inputCity.value = `${state.shipping.city || ''} - ${state.shipping.uf || ''}`;
+    if (addressFieldsBox) addressFieldsBox.style.display = 'block';
+    renderShippingOptions(state.shipping);
+  }
 }
 
 function renderSummary(state) {

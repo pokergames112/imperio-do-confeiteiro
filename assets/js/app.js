@@ -1,5 +1,6 @@
 import { products, categories } from './products.js';
 import { cart } from './cart.js';
+import { consultCep } from './shipping.js';
 
 // Format BRL Currency
 export function formatCurrency(value) {
@@ -18,6 +19,9 @@ const cartDrawerItems = document.getElementById('cartDrawerItems');
 const drawerItemsCount = document.getElementById('drawerItemsCount');
 const drawerFreteVal = document.getElementById('drawerFreteVal');
 const drawerTotalVal = document.getElementById('drawerTotalVal');
+const drawerCepInput = document.getElementById('drawerCepInput');
+const btnDrawerCalcCep = document.getElementById('btnDrawerCalcCep');
+const drawerCepMsg = document.getElementById('drawerCepMsg');
 const btnCloseDrawer = document.getElementById('btnCloseDrawer');
 const btnHeaderCart = document.getElementById('btnHeaderCart');
 const headerCartCount = document.getElementById('headerCartCount');
@@ -274,19 +278,33 @@ function updateCartUI(state) {
   if (mobileCartCount) mobileCartCount.textContent = `${state.totalItemsCount} ${state.totalItemsCount === 1 ? 'item' : 'itens'}`;
   if (mobileCartTotal) mobileCartTotal.textContent = formatCurrency(state.total);
 
+  // Update Drawer CEP Info if already calculated
+  if (drawerCepInput && state.shipping && state.shipping.cep && !drawerCepInput.value) {
+    drawerCepInput.value = state.shipping.cep;
+  }
+
+  if (drawerCepMsg && state.shipping) {
+    if (state.isFreeShipping) {
+      drawerCepMsg.className = 'drawer-cep-msg success';
+      drawerCepMsg.textContent = `✓ Frete Grátis aplicado (${state.shipping.city || 'Recife'} - ${state.shipping.uf || 'PE'})!`;
+    } else {
+      drawerCepMsg.className = 'drawer-cep-msg success';
+      drawerCepMsg.textContent = `✓ ${state.shipping.courier || 'Entrega'} • ${state.shipping.deadline || 'Em breve'}`;
+    }
+  }
+
   // Update Drawer Totals
   if (drawerFreteVal) {
     if (state.deliveryType === 'pickup') {
       drawerFreteVal.textContent = 'Retirar no Depósito (Grátis)';
-    } else if (state.subtotal >= 150) {
+    } else if (state.isFreeShipping) {
       drawerFreteVal.textContent = 'Grátis (Acima R$150)';
     } else if (state.shipping && state.shippingCost > 0) {
       drawerFreteVal.textContent = formatCurrency(state.shippingCost);
     } else {
-      drawerFreteVal.textContent = 'A calcular no checkout';
+      drawerFreteVal.textContent = 'Digite seu CEP';
     }
   }
-
 
   if (drawerTotalVal) drawerTotalVal.textContent = formatCurrency(state.total);
 
@@ -361,6 +379,68 @@ function setupEvents() {
   if (cartDrawerOverlay) {
     cartDrawerOverlay.addEventListener('click', (e) => {
       if (e.target === cartDrawerOverlay) closeCartDrawer();
+    });
+  }
+
+  // Drawer CEP Calculator logic
+  if (drawerCepInput) {
+    drawerCepInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 5) {
+        v = v.replace(/^(\d{5})(\d)/, '$1-$2');
+      }
+      e.target.value = v.substring(0, 9);
+    });
+
+    const handleDrawerCalcCep = async () => {
+      const rawCep = drawerCepInput.value.replace(/\D/g, '');
+      if (rawCep.length !== 8) {
+        if (drawerCepMsg) {
+          drawerCepMsg.className = 'drawer-cep-msg error';
+          drawerCepMsg.textContent = 'Digite um CEP válido com 8 números.';
+        }
+        return;
+      }
+
+      if (btnDrawerCalcCep) {
+        btnDrawerCalcCep.disabled = true;
+        btnDrawerCalcCep.textContent = '...';
+      }
+      if (drawerCepMsg) {
+        drawerCepMsg.className = 'drawer-cep-msg';
+        drawerCepMsg.textContent = 'Calculando frete...';
+      }
+
+      try {
+        const data = await consultCep(rawCep);
+        cart.setShipping(data);
+        if (drawerCepMsg) {
+          drawerCepMsg.className = 'drawer-cep-msg success';
+          drawerCepMsg.textContent = `✓ ${data.city} - ${data.uf} • ${data.courier}`;
+        }
+      } catch (err) {
+        if (drawerCepMsg) {
+          drawerCepMsg.className = 'drawer-cep-msg error';
+          drawerCepMsg.textContent = err.message || 'Erro ao calcular CEP.';
+        }
+        cart.setShipping(null);
+      } finally {
+        if (btnDrawerCalcCep) {
+          btnDrawerCalcCep.disabled = false;
+          btnDrawerCalcCep.textContent = 'Calcular';
+        }
+      }
+    };
+
+    if (btnDrawerCalcCep) {
+      btnDrawerCalcCep.addEventListener('click', handleDrawerCalcCep);
+    }
+
+    drawerCepInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleDrawerCalcCep();
+      }
     });
   }
 
