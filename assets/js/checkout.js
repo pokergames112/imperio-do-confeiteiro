@@ -176,22 +176,67 @@ function renderShippingOptions(data) {
 }
 
 function setupPaymentEvents() {
+  const payBox = document.getElementById('paymentExplanationBox');
+  const payTitle = document.getElementById('payExplTitle');
+  const payText = document.getElementById('payExplText');
+  const btnText = document.getElementById('btnFinalizeText');
+
   paymentCards.forEach(card => {
     card.addEventListener('click', () => {
       paymentCards.forEach(c => c.classList.remove('selected'));
       card.classList.add('selected');
       selectedPayment = card.dataset.payment;
 
-      if (pixSimulationBox) {
-        if (selectedPayment === 'pix') {
-          pixSimulationBox.style.display = 'block';
-        } else {
-          pixSimulationBox.style.display = 'none';
-        }
+      if (!payBox || !payTitle || !payText || !btnText) return;
+
+      if (selectedPayment === 'pix') {
+        payBox.style.background = '#f0fdf4';
+        payBox.style.borderColor = '#86efac';
+        payTitle.style.color = '#166534';
+        payTitle.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+          </svg>
+          <span>Pagamento via Pix (Valor Travado e Seguro)</span>
+        `;
+        payText.style.color = '#15803d';
+        payText.innerHTML = 'Ao clicar em <strong>"Continuar para Pagamento Pix"</strong>, você receberá na próxima página o <strong>QR Code oficial</strong> e o <strong>Código Copia e Cola</strong> com o valor exato do pedido.';
+        btnText.textContent = 'Continuar para Pagamento Pix';
+
+      } else if (selectedPayment === 'card_delivery') {
+        payBox.style.background = '#eff6ff';
+        payBox.style.borderColor = '#93c5fd';
+        payTitle.style.color = '#1e40af';
+        payTitle.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+          <span>Cartão na Entrega (Levar Maquininha)</span>
+        `;
+        payText.style.color = '#1d4ed8';
+        payText.innerHTML = 'O entregador / motoboy levará a maquininha de cartão até o seu endereço no momento da entrega. Aceitamos <strong>Débito, Crédito e Aproximação</strong>.';
+        btnText.textContent = 'Confirmar Pedido (Pagar na Entrega)';
+
+      } else if (selectedPayment === 'card_online') {
+        payBox.style.background = '#faf5ff';
+        payBox.style.borderColor = '#d8b4fe';
+        payTitle.style.color = '#6b21a8';
+        payTitle.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+          <span>Link de Pagamento Seguro (Cartão Parcelado)</span>
+        `;
+        payText.style.color = '#7e22ce';
+        payText.innerHTML = 'Nossa equipe enviará o <strong>link seguro de pagamento</strong> diretamente no seu WhatsApp para você parcelar no cartão de crédito.';
+        btnText.textContent = 'Confirmar e Receber Link de Pagamento';
       }
     });
   });
 }
+
 
 // Funções de Sanitização e Proteção contra Adulteração
 function sanitizeInput(str, maxLen = 150) {

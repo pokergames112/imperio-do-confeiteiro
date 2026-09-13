@@ -184,10 +184,79 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 4000);
 
-  } else {
+  } else if (order.paymentMethod.toLowerCase().includes('entrega') || order.paymentMethod.toLowerCase().includes('maquininha')) {
     if (pixBox) pixBox.style.display = 'none';
-    if (statusText) statusText.textContent = 'Pedido Recebido (Aguardando Entrega)';
+    const cardBox = document.getElementById('successCardDeliveryBox');
+    if (cardBox) cardBox.style.display = 'block';
+
+    if (statusBadgeBox) {
+      statusBadgeBox.style.background = '#eff6ff';
+      statusBadgeBox.style.borderColor = '#93c5fd';
+    }
+    if (statusBadgeTag) {
+      statusBadgeTag.style.color = '#1e40af';
+      statusBadgeTag.textContent = 'PEDIDO CONFIRMADO (PAGAR NA ENTREGA)';
+    }
+    if (statusText) {
+      statusText.innerHTML = '🛵 Levar Maquininha na Entrega';
+      statusText.style.color = '#1e3a8a';
+    }
+    if (statusIcon) statusIcon.textContent = '🛵';
+
+    // Ajusta Linha do Tempo
+    const dot2 = document.getElementById('stepDot2');
+    const label2 = document.getElementById('stepLabel2');
+    const dot3 = document.getElementById('stepDot3');
+    const label3 = document.getElementById('stepLabel3');
+    const btnWhatsAppText = document.getElementById('btnWhatsAppText');
+
+    if (dot2) {
+      dot2.style.background = '#3b82f6';
+      dot2.textContent = '💳';
+    }
+    if (label2) {
+      label2.style.color = '#1d4ed8';
+      label2.textContent = 'Na Entrega';
+    }
+    if (dot3) {
+      dot3.style.background = '#f59e0b';
+      dot3.style.color = '#fff';
+    }
+    if (label3) {
+      label3.style.color = '#b45309';
+      label3.style.fontWeight = '700';
+      label3.textContent = 'Em Separação';
+    }
+    if (btnWhatsAppText) {
+      btnWhatsAppText.textContent = 'Enviar Detalhes do Pedido no WhatsApp';
+    }
+
+  } else {
+    // Link de Pagamento Online
+    if (pixBox) pixBox.style.display = 'none';
+    const linkBox = document.getElementById('successCardOnlineBox');
+    if (linkBox) linkBox.style.display = 'block';
+
+    if (statusBadgeBox) {
+      statusBadgeBox.style.background = '#faf5ff';
+      statusBadgeBox.style.borderColor = '#d8b4fe';
+    }
+    if (statusBadgeTag) {
+      statusBadgeTag.style.color = '#6b21a8';
+      statusBadgeTag.textContent = 'AGUARDANDO LINK DE PAGAMENTO';
+    }
+    if (statusText) {
+      statusText.innerHTML = '🔗 Link será enviado no seu WhatsApp';
+      statusText.style.color = '#581c87';
+    }
+    if (statusIcon) statusIcon.textContent = '🔗';
+    
+    const btnWhatsAppText = document.getElementById('btnWhatsAppText');
+    if (btnWhatsAppText) {
+      btnWhatsAppText.textContent = 'Solicitar Link no WhatsApp';
+    }
   }
+
 
   // Setup WhatsApp Action Button
   const btnWhatsApp = document.getElementById('btnOpenWhatsAppDirect');
