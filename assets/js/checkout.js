@@ -2,6 +2,7 @@ import { cart } from './cart.js';
 import { consultCep, shippingRules } from './shipping.js';
 import { generatePixPayload } from './pix.js';
 import { formatCurrency } from './app.js';
+import { saveOrderToSupabase } from './supabase.js';
 
 // Elements
 const checkoutItemsList = document.getElementById('checkoutItemsList');
@@ -444,6 +445,9 @@ _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
     // Feedback visual e trava de duplo-clique
     btnFinalizeOrder.disabled = true;
     btnFinalizeOrder.innerHTML = '<span>Processando Pedido...</span>';
+
+    // Salva no banco de dados Supabase em segundo plano
+    saveOrderToSupabase(orderData).catch(err => console.error('[Supabase] Erro ao gravar pedido:', err));
 
     // Salva na sessão local
     sessionStorage.setItem('current_order', JSON.stringify(orderData));

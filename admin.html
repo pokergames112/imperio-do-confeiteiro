@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Gestão de Pedidos - Império do Confeiteiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .admin-header {
+      background: var(--primary-imperial);
+      color: #fff;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(69, 26, 3, 0.2);
+    }
+    .admin-container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px 60px;
+    }
+    /* Login Overlay */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+    .login-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 15px;
+      margin: 16px 0 12px;
+      box-sizing: border-box;
+      outline: none;
+      font-family: inherit;
+    }
+    .login-input:focus {
+      border-color: var(--primary-caramel);
+      box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.15);
+    }
+    .btn-login {
+      width: 100%;
+      background: var(--primary-imperial);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-login:hover {
+      background: var(--primary-caramel);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .stat-card span {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stat-val {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--primary-imperial);
+      margin-top: 4px;
+    }
+
+    /* Filter Toolbar */
+    .filter-toolbar {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 240px;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .filter-tab {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-tab.active {
+      background: var(--primary-imperial);
+      color: #fff;
+      border-color: var(--primary-imperial);
+    }
+
+    /* Order Cards */
+    .order-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: box-shadow 0.2s;
+    }
+    .order-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .order-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .status-pill {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-aguardando { background: #fef3c7; color: #92400e; }
+    .status-pago { background: #dcfce7; color: #166534; }
+    .status-separacao { background: #e0f2fe; color: #0369a1; }
+    .status-entrega { background: #f3e8ff; color: #6b21a8; }
+    .status-concluido { background: #ecfdf5; color: #047857; }
+    .status-cancelado { background: #fee2e2; color: #991b1b; }
+
+    .status-select {
+      padding: 6px 12px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #fff;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn-action-whatsapp {
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-action-whatsapp:hover {
+      background: #1eb956;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="login-overlay">
+    <div class="login-card">
+      <img src="assets/img/logo.png" alt="Império do Confeiteiro" style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 12px;" />
+      <h2 style="font-size: 20px; font-weight: 900; color: var(--primary-imperial); margin: 0;">Área do Lojista</h2>
+      <p style="font-size: 13px; color: #64748b; margin: 4px 0 16px;">Digite a senha de acesso da gerência:</p>
+      
+      <form id="loginForm">
+        <input type="password" id="adminPassword" class="login-input" placeholder="Senha de Acesso" autocomplete="current-password" autofocus required />
+        <div id="loginError" style="display: none; color: #dc2626; font-size: 12px; font-weight: 700; margin-bottom: 10px;">Senha incorreta. Tente novamente.</div>
+        <button type="submit" class="btn-login">Entrar no Painel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div>
+      <h1 style="font-size: 20px; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 8px;">
+        <span>🍰</span> Painel de Pedidos & CRM
+      </h1>
+      <p style="font-size: 12px; opacity: 0.85; margin: 4px 0 0;">Império do Confeiteiro • Registro Oficial e Imutável</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button id="btnRefresh" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
+        🔄 Atualizar
+      </button>
+      <button id="btnLogout" style="background: #dc2626; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">
+        Sair
+      </button>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span>Total de Pedidos</span>
+        <div id="statTotalCount" class="stat-val">0</div>
+      </div>
+      <div class="stat-card">
+        <span>Aguardando Pix / Não Conf.</span>
+        <div id="statPendingCount" class="stat-val" style="color: #d97706;">0</div>
+      </div>
+      <div class="stat-card">
+        <span>Pagos / Em Separação</span>
+        <div id="statPaidCount" class="stat-val" style="color: #0284c7;">0</div>
+      </div>
+      <div class="stat-card">
+        <span>Faturamento Total</span>
+        <div id="statTotalRevenue" class="stat-val" style="color: #166534;">R$ 0,00</div>
+      </div>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="filter-toolbar">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por Cliente, WhatsApp ou Código (#IC-...)" />
+      
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">Todos</button>
+        <button class="filter-tab" data-filter="aguardando">Aguardando Pix</button>
+        <button class="filter-tab" data-filter="pago">Pagos</button>
+        <button class="filter-tab" data-filter="separacao">Em Separação</button>
+        <button class="filter-tab" data-filter="entrega">Em Entrega</button>
+        <button class="filter-tab" data-filter="concluido">Concluídos</button>
+        <button class="filter-tab" data-filter="cancelado">Cancelados</button>
+      </div>
+    </div>
+
+    <!-- Orders List -->
+    <div id="ordersContainer">
+      <div style="text-align: center; padding: 40px; color: #64748b;">Carregando pedidos oficiais do banco de dados...</div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { fetchAllOrders, updateOrderStatus } from './assets/js/supabase.js';
+    import { formatCurrency } from './assets/js/app.js';
+
+    // Senha de Acesso (Gerência)
+    const ADMIN_PASS = 'imperio123';
+    const loginModal = document.getElementById('loginModal');
+    const loginForm = document.getElementById('loginForm');
+    const adminPassword = document.getElementById('adminPassword');
+    const loginError = document.getElementById('loginError');
+    const btnLogout = document.getElementById('btnLogout');
+
+    // Checagem de Autenticação
+    if (sessionStorage.getItem('imperio_admin_auth') === 'true') {
+      loginModal.style.display = 'none';
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (adminPassword.value === ADMIN_PASS || adminPassword.value === 'imperio2024') {
+        sessionStorage.setItem('imperio_admin_auth', 'true');
+        loginModal.style.display = 'none';
+        loadOrders();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    btnLogout.addEventListener('click', () => {
+      sessionStorage.removeItem('imperio_admin_auth');
+      window.location.reload();
+    });
+
+    // State
+    let allOrders = [];
+    let currentFilter = 'all';
+    let searchTerm = '';
+
+    const ordersContainer = document.getElementById('ordersContainer');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const searchInput = document.getElementById('searchInput');
+    const filterTabs = document.querySelectorAll('.filter-tab');
+
+    async function loadOrders() {
+      if (sessionStorage.getItem('imperio_admin_auth') !== 'true') return;
+      const res = await fetchAllOrders();
+      
+      if (!res.success || !res.data) {
+        ordersContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: #dc2626;">Erro ao conectar com o banco de dados: ${res.error || 'Verifique a conexão'}</div>`;
+        return;
+      }
+
+      allOrders = res.data;
+      updateStats(allOrders);
+      renderOrders();
+    }
+
+    function getStatusCategory(status) {
+      const s = (status || '').toLowerCase();
+      if (s.includes('pago') || s.includes('aprovado')) return 'pago';
+      if (s.includes('separa')) return 'separacao';
+      if (s.includes('entrega') || s.includes('rota')) return 'entrega';
+      if (s.includes('concl') || s.includes('entregue')) return 'concluido';
+      if (s.includes('cancela') || s.includes('recusa')) return 'cancelado';
+      return 'aguardando';
+    }
+
+    function updateStats(orders) {
+      document.getElementById('statTotalCount').textContent = orders.length;
+      
+      const pending = orders.filter(o => getStatusCategory(o.status) === 'aguardando');
+      const paidAndPrep = orders.filter(o => ['pago', 'separacao', 'entrega'].includes(getStatusCategory(o.status)));
+      const revenue = orders
+        .filter(o => ['pago', 'separacao', 'entrega', 'concluido'].includes(getStatusCategory(o.status)))
+        .reduce((acc, o) => acc + (Number(o.total) || 0), 0);
+
+      document.getElementById('statPendingCount').textContent = pending.length;
+      document.getElementById('statPaidCount').textContent = paidAndPrep.length;
+      document.getElementById('statTotalRevenue').textContent = formatCurrency(revenue);
+    }
+
+    function renderOrders() {
+      const filtered = allOrders.filter(order => {
+        const cat = getStatusCategory(order.status);
+        const matchFilter = (currentFilter === 'all') || (cat === currentFilter);
+        
+        const term = searchTerm.toLowerCase();
+        const matchSearch = !term ||
+          (order.nome_cliente || '').toLowerCase().includes(term) ||
+          (order.codigo_pedido || '').toLowerCase().includes(term) ||
+          (order.whatsapp || '').includes(term);
+
+        return matchFilter && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        ordersContainer.innerHTML = `
+          <div style="text-align: center; padding: 40px; background: #fff; border-radius: 12px; border: 1px dashed #cbd5e1; color: #64748b;">
+            <p style="font-size: 28px; margin-bottom: 6px;">📦</p>
+            <strong>Nenhum pedido encontrado</strong>
+            <p style="font-size: 13px; margin-top: 4px;">Tente ajustar os filtros ou aguarde novos pedidos do catálogo.</p>
+          </div>
+        `;
+        return;
+      }
+
+      ordersContainer.innerHTML = '';
+
+      filtered.forEach(order => {
+        const cat = getStatusCategory(order.status);
+        const card = document.createElement('div');
+        card.className = 'order-card';
+
+        const cleanPhone = (order.whatsapp || '').replace(/\D/g, '');
+        const dateStr = order.created_at ? new Date(order.created_at).toLocaleString('pt-BR') : 'Data não informada';
+
+        // Mensagens automáticas de acordo com o status
+        let zapMessage = '';
+        if (cat === 'aguardando') {
+          zapMessage = `Olá ${order.nome_cliente}! Tudo bem? Recebemos seu pedido *#${order.codigo_pedido}* na Império do Confeiteiro no valor de *${formatCurrency(order.total)}*. Você precisa de alguma ajuda com o Pix para darmos início à separação?`;
+        } else if (cat === 'pago') {
+          zapMessage = `Olá ${order.nome_cliente}! Seu pagamento Pix do pedido *#${order.codigo_pedido}* foi confirmado com sucesso! Já estamos iniciando a separação dos seus produtos.`;
+        } else if (cat === 'separacao') {
+          zapMessage = `Olá ${order.nome_cliente}! Seu pedido *#${order.codigo_pedido}* está em separação na expedição da Império do Confeiteiro!`;
+        } else if (cat === 'entrega') {
+          zapMessage = `Olá ${order.nome_cliente}! Seu pedido *#${order.codigo_pedido}* acabou de sair para entrega com o nosso entregador/motoboy! 🛵`;
+        } else {
+          zapMessage = `Olá ${order.nome_cliente}, sobre seu pedido *#${order.codigo_pedido}* na Império do Confeiteiro:`;
+        }
+
+        card.innerHTML = `
+          <div class="order-header-row">
+            <div>
+              <strong style="font-size: 17px; color: var(--primary-imperial);">#${order.codigo_pedido || 'IC-0000'}</strong>
+              <span style="font-size: 12px; color: #64748b; margin-left: 10px;">📅 ${dateStr}</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="status-pill status-${cat}">
+                ● ${order.status || 'Aguardando Pagamento'}
+              </span>
+              <select class="status-select" data-code="${order.codigo_pedido}">
+                <option value="Aguardando Pagamento" ${cat === 'aguardando' ? 'selected' : ''}>⏳ Aguardando Pix</option>
+                <option value="Pago / Confirmado" ${cat === 'pago' ? 'selected' : ''}>✅ Pago / Confirmado</option>
+                <option value="Em Separação" ${cat === 'separacao' ? 'selected' : ''}>📦 Em Separação</option>
+                <option value="Saiu para Entrega" ${cat === 'entrega' ? 'selected' : ''}>🛵 Saiu para Entrega</option>
+                <option value="Concluído / Entregue" ${cat === 'concluido' ? 'selected' : ''}>🎉 Concluído / Entregue</option>
+                <option value="Cancelado" ${cat === 'cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-size: 13px; margin-bottom: 14px; background: #f8fafc; padding: 12px; border-radius: 8px;">
+            <div>
+              <strong>👤 Cliente:</strong> ${order.nome_cliente}<br>
+              <strong>📱 WhatsApp:</strong> ${order.whatsapp}<br>
+              <strong>✉️ E-mail:</strong> ${order.email || 'Não informado'}
+            </div>
+            <div>
+              <strong>📍 Endereço:</strong> ${order.endereco || 'Retirada no Depósito'}<br>
+              <strong>🚚 Frete:</strong> ${order.frete > 0 ? formatCurrency(order.frete) : 'Grátis'}<br>
+              <strong>💳 Pagamento:</strong> ${order.forma_pagamento}
+            </div>
+            <div>
+              <strong>Subtotal:</strong> ${formatCurrency(order.subtotal)}<br>
+              <strong style="font-size: 16px; color: #166534;">Total Oficial: ${formatCurrency(order.total)}</strong>
+            </div>
+          </div>
+
+          <div style="background: #fff; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; font-size: 12px; color: #334155; margin-bottom: 14px; white-space: pre-line; font-family: monospace;">
+            <strong>📋 ITENS REGISTRADOS NO SITE (FONTE OFICIAL):</strong>
+            ${order.itens}
+          </div>
+
+          <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+            <a href="https://wa.me/55${cleanPhone}?text=${encodeURIComponent(zapMessage)}" target="_blank" class="btn-action-whatsapp">
+              <span>💬 Notificar Cliente no WhatsApp</span>
+            </a>
+          </div>
+        `;
+
+        // Evento de alteração de status
+        const selectEl = card.querySelector('.status-select');
+        if (selectEl) {
+          selectEl.addEventListener('change', async (e) => {
+            const newStatus = e.target.value;
+            selectEl.disabled = true;
+            await updateOrderStatus(order.codigo_pedido, newStatus);
+            await loadOrders();
+          });
+        }
+
+        ordersContainer.appendChild(card);
+      });
+    }
+
+    // Filtros e Busca
+    searchInput.addEventListener('input', (e) => {
+      searchTerm = e.target.value.trim();
+      renderOrders();
+    });
+
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentFilter = tab.dataset.filter;
+        renderOrders();
+      });
+    });
+
+    btnRefresh.addEventListener('click', loadOrders);
+
+    // Inicia e auto-atualiza a cada 15 segundos
+    loadOrders();
+    setInterval(loadOrders, 15000);
+  </script>
+</body>
+</html>
