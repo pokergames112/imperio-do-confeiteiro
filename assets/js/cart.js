@@ -2,13 +2,42 @@ import { products } from './products.js';
 
 class CartStore {
   constructor() {
-    this.items = JSON.parse(localStorage.getItem('imperio_cart') || '[]');
+    this.items = this.sanitizeItems(JSON.parse(localStorage.getItem('imperio_cart') || '[]'));
     this.shipping = JSON.parse(localStorage.getItem('imperio_shipping') || 'null');
-    this.deliveryType = localStorage.getItem('imperio_delivery_type') || 'receive'; // 'receive' | 'pickup'
+    this.deliveryType = localStorage.getItem('imperio_delivery_type') === 'pickup' ? 'pickup' : 'receive';
     this.listeners = [];
   }
 
+  // Blindagem: Valida e sincroniza todos os itens com a tabela oficial de produtos
+  sanitizeItems(rawItems) {
+    if (!Array.isArray(rawItems)) return [];
+    
+    const validItems = [];
+    rawItems.forEach(item => {
+      if (!item || !item.id) return;
+      const masterProduct = products.find(p => p.id === item.id);
+      if (!masterProduct) return; // Remove produto inexistente / forjado
+
+      const cleanQty = Math.max(1, Math.min(999, Math.floor(Number(item.qty) || 1)));
+      
+      // Força os preços e dados diretamente da tabela oficial de produtos (anti-tamper)
+      validItems.push({
+        id: masterProduct.id,
+        name: masterProduct.name,
+        category: masterProduct.category,
+        image: masterProduct.image,
+        oldPrice: masterProduct.oldPrice,
+        clubPrice: masterProduct.clubPrice,
+        unit: masterProduct.unit,
+        qty: cleanQty
+      });
+    });
+
+    return validItems;
+  }
+
   save() {
+    this.items = this.sanitizeItems(this.items);
     localStorage.setItem('imperio_cart', JSON.stringify(this.items));
     localStorage.setItem('imperio_shipping', JSON.stringify(this.shipping));
     localStorage.setItem('imperio_delivery_type', this.deliveryType);
@@ -29,9 +58,11 @@ class CartStore {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
+    const cleanQty = Math.max(1, Math.min(999, Math.floor(Number(qty) || 1)));
     const existingIndex = this.items.findIndex(item => item.id === productId);
+
     if (existingIndex > -1) {
-      this.items[existingIndex].qty += qty;
+      this.items[existingIndex].qty = Math.min(999, this.items[existingIndex].qty + cleanQty);
     } else {
       this.items.push({
         id: product.id,
@@ -41,7 +72,7 @@ class CartStore {
         oldPrice: product.oldPrice,
         clubPrice: product.clubPrice,
         unit: product.unit,
-        qty: qty
+        qty: cleanQty
       });
     }
 
@@ -49,13 +80,15 @@ class CartStore {
   }
 
   updateQty(productId, qty) {
-    if (qty <= 0) {
+    const numericQty = Math.floor(Number(qty) || 0);
+    if (numericQty <= 0) {
       this.removeItem(productId);
       return;
     }
+    const cleanQty = Math.min(999, numericQty);
     const item = this.items.find(i => i.id === productId);
     if (item) {
-      item.qty = qty;
+      item.qty = cleanQty;
       this.save();
     }
   }
@@ -71,34 +104,53 @@ class CartStore {
   }
 
   setShipping(shippingData) {
-    this.shipping = shippingData;
+    if (shippingData && typeof shippingData.shippingValue === 'number' && !isNaN(shippingData.shippingValue)) {
+      this.shipping = {
+        ...shippingData,
+        shippingValue: Math.max(0, Number(shippingData.shippingValue))
+      };
+    } else {
+      this.shipping = null;
+    }
     this.save();
   }
 
   setDeliveryType(type) {
-    this.deliveryType = type;
+    this.deliveryType = type === 'pickup' ? 'pickup' : 'receive';
     this.save();
   }
 
   getState() {
+    // Revalidação contínua contra adulteração
+    this.items = this.sanitizeItems(this.items);
+
     let subtotalStandard = 0;
     let subtotalClub = 0;
     let totalItemsCount = 0;
 
     this.items.forEach(item => {
-      subtotalStandard += item.oldPrice * item.qty;
-      subtotalClub += item.clubPrice * item.qty;
+      // Sempre recalcula baseado na tabela oficial
+      const masterProduct = products.find(p => p.id === item.id);
+      const oldPrice = masterProduct ? masterProduct.oldPrice : item.oldPrice;
+      const clubPrice = masterProduct ? masterProduct.clubPrice : item.clubPrice;
+
+      subtotalStandard += oldPrice * item.qty;
+      subtotalClub += clubPrice * item.qty;
       totalItemsCount += item.qty;
     });
 
+    // Precisão decimal
+    subtotalStandard = Math.round(subtotalStandard * 100) / 100;
+    subtotalClub = Math.round(subtotalClub * 100) / 100;
+
     let shippingCost = 0;
     if (this.deliveryType === 'receive' && this.shipping) {
-      shippingCost = (subtotalClub >= 150) ? 0 : (this.shipping.shippingValue || 0);
+      shippingCost = (subtotalClub >= 150) ? 0 : Math.max(0, Number(this.shipping.shippingValue || 0));
     }
 
-    const totalStandard = subtotalStandard + shippingCost;
-    const totalClub = subtotalClub + shippingCost;
-    const savings = totalStandard - totalClub;
+    const totalStandard = Math.round((subtotalStandard + shippingCost) * 100) / 100;
+    const totalClub = Math.round((subtotalClub + shippingCost) * 100) / 100;
+    const savings = Math.max(0, Math.round((totalStandard - totalClub) * 100) / 100);
 
     return {
       items: this.items,
@@ -116,3 +168,4 @@ class CartStore {
 }
 
 export const cart = new CartStore();
+

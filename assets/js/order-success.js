@@ -21,17 +21,23 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('successTotal').textContent = formatCurrency(order.total);
   document.getElementById('successPaymentMethod').textContent = order.paymentMethod;
 
-  // Render Items List
+  // Render Items List (Protegido contra DOM XSS)
   const itemsContainer = document.getElementById('successItemsList');
   itemsContainer.innerHTML = '';
   (order.items || []).forEach(item => {
     const row = document.createElement('div');
     row.style.display = 'flex';
     row.style.justifyContent = 'space-between';
-    row.innerHTML = `
-      <span>${item.qty}x ${item.name}</span>
-      <strong>${formatCurrency(item.clubPrice * item.qty)}</strong>
-    `;
+    row.style.padding = '4px 0';
+
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = `${item.qty}x ${item.name}`;
+
+    const priceStrong = document.createElement('strong');
+    priceStrong.textContent = formatCurrency(item.clubPrice * item.qty);
+
+    row.appendChild(titleSpan);
+    row.appendChild(priceStrong);
     itemsContainer.appendChild(row);
   });
 

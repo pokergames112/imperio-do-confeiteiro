@@ -208,43 +208,131 @@ function updatePixBox(total) {
   pixKeyInput.value = pix.payload;
 }
 
+// Funções de Sanitização e Proteção contra Adulteração
+function sanitizeInput(str, maxLen = 150) {
+  if (!str || typeof str !== 'string') return '';
+  return str
+    .replace(/[<>]/g, '') // Remove tags HTML para evitar XSS
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Remove caracteres de controle
+    .trim()
+    .slice(0, maxLen);
+}
+
+function isValidEmail(email) {
+  if (!email) return true; // E-mail é opcional
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+  const digits = phone.replace(/\D/g, '');
+  // No Brasil DDD (2) + 8 ou 9 dígitos = 10 ou 11 dígitos
+  return digits.length >= 10 && digits.length <= 13;
+}
+
+function setupInputMasks() {
+  if (inputPhone) {
+    inputPhone.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+      if (v.length > 10) {
+        e.target.value = `(${v.slice(0, 2)}) ${v.slice(2, 7)}-${v.slice(7)}`;
+      } else if (v.length > 6) {
+        e.target.value = `(${v.slice(0, 2)}) ${v.slice(2, 6)}-${v.slice(6)}`;
+      } else if (v.length > 2) {
+        e.target.value = `(${v.slice(0, 2)}) ${v.slice(2)}`;
+      } else if (v.length > 0) {
+        e.target.value = `(${v}`;
+      }
+    });
+  }
+
+  if (cepInput) {
+    cepInput.addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+      if (v.length > 5) {
+        e.target.value = `${v.slice(0, 5)}-${v.slice(5)}`;
+      } else {
+        e.target.value = v;
+      }
+    });
+  }
+}
+
 function setupFinalizeOrder() {
   if (!btnFinalizeOrder) return;
 
+  setupInputMasks();
+
   btnFinalizeOrder.addEventListener('click', () => {
-    const name = inputName ? inputName.value.trim() : '';
-    const phone = inputPhone ? inputPhone.value.trim() : '';
-    const email = inputEmail ? inputEmail.value.trim() : '';
+    const rawName = inputName ? inputName.value : '';
+    const rawPhone = inputPhone ? inputPhone.value : '';
+    const rawEmail = inputEmail ? inputEmail.value : '';
+    const rawCpf = inputCpf ? inputCpf.value : '';
+
+    const name = sanitizeInput(rawName, 80);
+    const phone = sanitizeInput(rawPhone, 20);
+    const email = sanitizeInput(rawEmail, 100);
+    const cpf = sanitizeInput(rawCpf, 20);
+
     const state = cart.getState();
 
-    if (!name) {
-      alert('Por favor, informe seu nome.');
+    // 1. Validação de Carrinho Vazio
+    if (!state.items || state.items.length === 0 || state.subtotalClub <= 0) {
+      alert('Seu carrinho está vazio ou com valor inválido. Redirecionando...');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    // 2. Validação de Nome
+    if (!name || name.length < 3) {
+      alert('Por favor, informe seu nome completo (mínimo 3 caracteres).');
       if (inputName) inputName.focus();
       return;
     }
 
-    if (!phone) {
-      alert('Por favor, informe seu número de WhatsApp.');
+    // 3. Validação de Telefone / WhatsApp
+    if (!isValidPhone(phone)) {
+      alert('Por favor, informe um número de WhatsApp válido com DDD (ex: (81) 98888-7777).');
       if (inputPhone) inputPhone.focus();
       return;
     }
 
-    if (state.deliveryType === 'receive' && (!inputStreet?.value || !inputNumber?.value)) {
-      alert('Por favor, calcule o frete pelo CEP e informe o número do endereço.');
+    // 4. Validação de E-mail
+    if (email && !isValidEmail(email)) {
+      alert('Por favor, informe um endereço de e-mail válido ou deixe em branco.');
+      if (inputEmail) inputEmail.focus();
       return;
     }
 
-    // Prepare structured WhatsApp Message
-    const itemsText = state.items.map(i => `• ${i.qty}x ${i.name} (${formatCurrency(i.clubPrice * i.qty)})`).join('\n');
+    // 5. Validação de Entrega / Endereço
+    const street = sanitizeInput(inputStreet?.value || '', 100);
+    const number = sanitizeInput(inputNumber?.value || '', 20);
+    const complement = sanitizeInput(inputComplement?.value || '', 50);
+    const neighborhood = sanitizeInput(inputNeighborhood?.value || '', 60);
+    const city = sanitizeInput(inputCity?.value || '', 60);
+    const cep = sanitizeInput(cepInput?.value || '', 12);
+
+    if (state.deliveryType === 'receive') {
+      if (!street || !number) {
+        alert('Por favor, preencha o CEP, calcule o frete e informe a rua e o número de entrega.');
+        if (!street && cepInput) cepInput.focus();
+        else if (inputNumber) inputNumber.focus();
+        return;
+      }
+    }
+
+    // Recalcula totais usando apenas a fonte protegida
+    const itemsText = state.items.map(i => `• ${i.qty}x ${sanitizeInput(i.name)} (${formatCurrency(i.clubPrice * i.qty)})`).join('\n');
     const deliveryMethodText = state.deliveryType === 'pickup' 
       ? 'Retirar no Depósito da Confeitaria (Grátis)' 
-      : `${currentShippingInfo?.courier || 'Entrega'} - ${formatCurrency(state.shippingCost)}`;
+      : `${currentShippingInfo?.courier || 'Entrega'} - ${state.shippingCost > 0 ? formatCurrency(state.shippingCost) : 'Grátis'}`;
 
     const addressText = state.deliveryType === 'pickup'
-      ? 'Retirada no Balcão'
-      : `${inputStreet?.value}, Nº ${inputNumber?.value} ${inputComplement?.value ? '(' + inputComplement.value + ')' : ''} - ${inputNeighborhood?.value}, ${inputCity?.value}`;
+      ? 'Retirada no Balcão do Depósito'
+      : `${street}, Nº ${number} ${complement ? '(' + complement + ')' : ''} - ${neighborhood}, ${city}`;
 
-    const paymentLabel = selectedPayment === 'pix' ? 'Pix (Chave gerada no site)' : (selectedPayment === 'card_delivery' ? 'Cartão na Entrega (Maquininha)' : 'Cartão de Crédito');
+    const paymentLabel = selectedPayment === 'pix' 
+      ? 'Pix (Chave gerada no site)' 
+      : (selectedPayment === 'card_delivery' ? 'Cartão na Entrega (Maquininha)' : 'Cartão de Crédito');
 
     const eCake = '\u{1F370}';
     const eUser = '\u{1F464}';
@@ -276,7 +364,7 @@ ${ePin} *Endereço:* ${addressText}
 ----------------------------------------
 _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
 
-    // Generate unique order code
+    // Gerador de código de pedido único
     const orderCode = `IC-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const orderData = {
@@ -285,12 +373,12 @@ _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
       name,
       phone,
       email,
-      cpf: inputCpf?.value || null,
+      cpf: cpf || null,
       deliveryType: state.deliveryType === 'pickup' ? 'Retirada no Depósito' : 'Entrega',
       address: addressText,
-      neighborhood: inputNeighborhood?.value || '',
-      city: inputCity?.value || 'Recife - PE',
-      cep: cepInput?.value || '',
+      neighborhood: neighborhood || '',
+      city: city || 'Recife - PE',
+      cep: cep || '',
       items: state.items,
       itemsText: itemsText,
       subtotal: state.subtotalClub,
@@ -300,7 +388,7 @@ _Pedido gerado via Catálogo Digital Império do Confeiteiro_`;
       createdAt: new Date().toISOString()
     };
 
-    // Feedback visual no botão
+    // Feedback visual e trava de duplo-clique
     btnFinalizeOrder.disabled = true;
     btnFinalizeOrder.innerHTML = '<span>Salvando Pedido...</span>';
 
