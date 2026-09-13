@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Finalizar Pedido - Império do Confeiteiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/checkout.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <span>🔒 Ambiente Seguro de Checkout - Império do Confeiteiro</span>
+  </div>
+
+  <div class="checkout-page-container">
+    <!-- Header Navigation -->
+    <div class="checkout-header-nav">
+      <a href="index.html" class="btn-back-catalog">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M19 12H5"></path>
+          <path d="m12 19-7-7 7-7"></path>
+        </svg>
+        <span>Voltar para o catálogo</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="assets/img/logo.png" alt="Império do Confeiteiro" style="width: 38px; height: 38px; object-fit: contain;" />
+        <h1 class="checkout-title-heading">Finalizar Compra</h1>
+      </div>
+    </div>
+
+    <!-- Main Grid: Left Steps | Right Summary -->
+    <div class="checkout-grid-layout">
+      <!-- Left Column: Steps -->
+      <div class="checkout-steps-column">
+
+        <!-- STEP 1: DADOS PESSOAIS -->
+        <div class="checkout-card">
+          <div class="checkout-card-header">
+            <span class="step-number-badge">1</span>
+            <h3>Dados Pessoais (Para Contato & NF)</h3>
+          </div>
+          <div class="checkout-card-body">
+            <div class="form-group-row two-cols">
+              <div>
+                <label class="form-label" for="inputName">Nome Completo *</label>
+                <input type="text" id="inputName" class="form-input" placeholder="Ex: Elisangela Fontes" required />
+              </div>
+              <div>
+                <label class="form-label" for="inputPhone">WhatsApp (com DDD) *</label>
+                <input type="tel" id="inputPhone" class="form-input" placeholder="(81) 98985-9211" required />
+              </div>
+            </div>
+
+            <div class="form-group-row two-cols">
+              <div>
+                <label class="form-label" for="inputEmail">E-mail</label>
+                <input type="email" id="inputEmail" class="form-input" placeholder="seu@email.com" />
+              </div>
+              <div>
+                <label class="form-label" for="inputCpf">CPF / CNPJ (Opcional)</label>
+                <input type="text" id="inputCpf" class="form-input" placeholder="000.000.000-00" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: FORMA DE ENTREGA -->
+        <div class="checkout-card">
+          <div class="checkout-card-header">
+            <span class="step-number-badge">2</span>
+            <h3>Entrega & Localidade</h3>
+          </div>
+          <div class="checkout-card-body">
+            <!-- Toggle Tabs: RECEBER vs RETIRAR -->
+            <div class="delivery-toggle-tabs">
+              <button class="delivery-tab-btn active" id="tabReceive">RECEBER</button>
+              <button class="delivery-tab-btn" id="tabPickup">RETIRAR NO DEPÓSITO</button>
+            </div>
+
+            <!-- Receive Section -->
+            <div id="deliverySectionReceive">
+              <label class="form-label">Digite seu CEP de Recife / Região:</label>
+              <div class="cep-calc-box">
+                <input type="text" id="cepInput" placeholder="Ex: 54759-060 ou 51020-000" maxlength="9" />
+                <button class="btn-calc-cep" id="btnSearchCep">Calcular</button>
+              </div>
+
+              <!-- Shipping Options Result -->
+              <div id="shippingOptionsContainer"></div>
+
+              <!-- Address Details (Auto-filled by ViaCEP) -->
+              <div id="addressFieldsBox" style="display: none; margin-top: 14px;">
+                <div class="form-group-row">
+                  <div>
+                    <label class="form-label">Rua / Logradouro</label>
+                    <input type="text" id="inputStreet" class="form-input" />
+                  </div>
+                </div>
+                <div class="form-group-row two-cols">
+                  <div>
+                    <label class="form-label">Número *</label>
+                    <input type="text" id="inputNumber" class="form-input" placeholder="Ex: 123" required />
+                  </div>
+                  <div>
+                    <label class="form-label">Complemento / Ref.</label>
+                    <input type="text" id="inputComplement" class="form-input" placeholder="Apto, Casa, Bloco..." />
+                  </div>
+                </div>
+                <div class="form-group-row two-cols">
+                  <div>
+                    <label class="form-label">Bairro</label>
+                    <input type="text" id="inputNeighborhood" class="form-input" />
+                  </div>
+                  <div>
+                    <label class="form-label">Cidade - UF</label>
+                    <input type="text" id="inputCity" class="form-input" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pickup Section -->
+            <div id="deliverySectionPickup" style="display: none;">
+              <div class="pickup-address-box">
+                <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; margin-bottom: 4px; color: var(--primary-imperial);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span>Ponto de Retirada Oficial:</span>
+                </div>
+                Depósito Império do Confeiteiro - Recife / PE<br>
+                <small style="color: var(--text-muted);">Horário: Segunda a Sexta (8h às 17h) e Sábado (8h às 12h)</small><br>
+                <span style="color: var(--success-checkout); font-weight: 800; margin-top: 6px; display: inline-block;">✓ Taxa de Entrega: R$ 0,00 (Grátis)</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- STEP 3: PAGAMENTO -->
+        <div class="checkout-card">
+          <div class="checkout-card-header">
+            <span class="step-number-badge">3</span>
+            <h3>Forma de Pagamento</h3>
+          </div>
+          <div class="checkout-card-body">
+            <div class="payment-methods-grid">
+              <!-- Pix -->
+              <div class="payment-method-card selected" data-payment="pix">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #059669;">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+                <span class="payment-name">Pix Imediato</span>
+                <span class="payment-discount-pill">5% OFF</span>
+              </div>
+
+              <!-- Cartão Entrega -->
+              <div class="payment-method-card" data-payment="card_delivery">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-caramel);">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                  <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <span class="payment-name">Cartão na Entrega</span>
+                <small style="font-size: 10px; color: var(--text-muted);">Levar Maquininha</small>
+              </div>
+
+              <!-- Cartão Online / Link -->
+              <div class="payment-method-card" data-payment="card_online">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-caramel);">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                <span class="payment-name">Link de Pagamento</span>
+                <small style="font-size: 10px; color: var(--text-muted);">Parcelamento</small>
+              </div>
+            </div>
+
+            <!-- Pix Simulation Area -->
+            <div class="pix-simulation-box" id="pixSimulationBox">
+              <h4 style="font-weight: 800; color: var(--primary-imperial); margin-bottom: 4px;">Pague com Pix (Aprovação Instantânea)</h4>
+              <p style="font-size: 12px; color: var(--text-muted);">Escaneie o QR Code abaixo no app do seu banco:</p>
+              
+              <img id="pixQrImg" src="" alt="QR Code Pix" class="pix-qr-img" />
+              
+              <div class="pix-copia-cola-box">
+                <input type="text" id="pixKeyInput" readonly value="Carregando chave..." />
+                <button class="btn-copy-pix" id="btnCopyPix">Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Resumo do Pedido -->
+      <div class="checkout-summary-column">
+        <div class="checkout-summary-card">
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px;">Resumo do Pedido</h3>
+          
+          <div class="summary-items-list" id="checkoutItemsList">
+            <!-- Injected via JS -->
+          </div>
+
+          <div class="summary-calc-row">
+            <span>Subtotal:</span>
+            <strong id="checkoutSubtotal">R$ 0,00</strong>
+          </div>
+
+          <div class="summary-calc-row">
+            <span>Frete:</span>
+            <strong id="checkoutShipping">Digite seu CEP</strong>
+          </div>
+
+          <div class="summary-calc-row total-final">
+            <span>Total da Compra:</span>
+            <strong id="checkoutTotal">R$ 0,00</strong>
+          </div>
+
+          <div class="summary-club-badge">
+            <span>Total com Preço Clube:</span>
+            <span id="checkoutClubTotal">R$ 0,00 👑</span>
+          </div>
+
+          <button class="btn-finalize-order" id="btnFinalizeOrder">
+            <span>Finalizar Pedido no WhatsApp</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="assets/js/checkout.js"></script>
+</body>
+</html>

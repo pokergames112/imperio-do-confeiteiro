@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Império do Confeiteiro - Insumos, Embalagens & Utensílios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <span>Entregas em Recife e Região Metropolitana</span>
+    <span class="highlight">Frete Grátis acima de R$ 150</span>
+  </div>
+
+  <!-- Main Sticky Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/img/logo.png" alt="Império do Confeiteiro" class="brand-logo-img" />
+        <div class="brand-title">
+          Império do Confeiteiro
+          <small>Insumos & Embalagens</small>
+        </div>
+      </a>
+
+      <!-- Desktop Search -->
+      <div class="header-search">
+        <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" placeholder="O que você precisa para a sua produção hoje?" />
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button class="btn-header-cart" id="btnHeaderCart" aria-label="Abrir Carrinho">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span>Carrinho</span>
+          <span class="cart-badge-count" id="headerCartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Search Bar -->
+  <div class="mobile-search-bar">
+    <div class="mobile-search-wrapper">
+      <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" id="mobileSearchInput" placeholder="Buscar insumos, farinhas, embalagens..." />
+    </div>
+  </div>
+
+  <!-- Hero Carousel de Banners -->
+  <section class="hero-banner-section">
+    <div class="banner-carousel-container">
+      <div class="banner-track" id="bannerTrack">
+        <!-- Banner 1: Boas-vindas com Mascote Oficial -->
+        <div class="banner-slide" style="background: linear-gradient(135deg, #781717 0%, #3e0c0c 100%);">
+          <div class="banner-content">
+            <span class="banner-tag">Catálogo Oficial</span>
+            <h2 class="banner-title">Tudo para Confeitaria em um Só Lugar</h2>
+            <p class="banner-desc">Insumos e embalagens no atacado e varejo para você lucrar ainda mais.</p>
+            <button class="banner-cta" onclick="document.getElementById('catalogSection').scrollIntoView({behavior: 'smooth'})">
+              Ver Produtos & Preços
+            </button>
+          </div>
+          <div style="position: absolute; right: 10px; bottom: 0; height: 95%; max-width: 40%; display: flex; align-items: flex-end; z-index: 1;">
+            <img src="assets/img/mascote.png" alt="Mascote Confeiteira" style="height: 100%; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));" />
+          </div>
+        </div>
+
+        <!-- Banner 2: Ofertas da Semana -->
+        <div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1200&auto=format&fit=crop&q=80');">
+          <div class="banner-content">
+            <span class="banner-tag">Ofertas da Semana</span>
+            <h2 class="banner-title">Farinha Farina R$ 2,79 & Leite Condensado R$ 4,99</h2>
+            <p class="banner-desc">Aproveite as ofertas de queima de estoque com validade especial para sua produção.</p>
+            <button class="banner-cta" onclick="document.getElementById('catalogSection').scrollIntoView({behavior: 'smooth'})">
+              Ver Ofertas Especiais
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner 3: Kit Morango Cravejado -->
+        <div class="banner-slide" style="background-image: url('https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=1200&auto=format&fit=crop&q=80');">
+          <div class="banner-content">
+            <span class="banner-tag">Linha Especial</span>
+            <h2 class="banner-title">Kit Morango Cravejado & Brigadeiro Gourmet</h2>
+            <p class="banner-desc">Temos os ingredientes certos para o seu morango e doces fazerem sucesso!</p>
+            <button class="banner-cta" onclick="document.getElementById('catalogSection').scrollIntoView({behavior: 'smooth'})">
+              Garantir Kit Promocional
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-btn prev" id="carouselPrev" aria-label="Banner anterior">‹</button>
+      <button class="carousel-btn next" id="carouselNext" aria-label="Próximo banner">›</button>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+  </section>
+
+  <!-- Categories Navigation Section (Com Setinhas no Desktop e Swipe no Mobile) -->
+  <section class="categories-nav-section">
+    <div class="categories-wrapper">
+      <button class="categories-scroll-btn prev" id="btnCatScrollLeft" aria-label="Rolar categorias para a esquerda">‹</button>
+      <div class="categories-scroll" id="categoriesContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+      <button class="categories-scroll-btn next" id="btnCatScrollRight" aria-label="Rolar categorias para a direita">›</button>
+    </div>
+  </section>
+
+  <!-- Products Catalog Section -->
+  <main class="catalog-section" id="catalogSection">
+    <div class="section-header-title">
+      <h2>Catálogo de Produtos</h2>
+      <span>Preços especiais para confeiteiras</span>
+    </div>
+
+    <!-- Product Cards Grid (Inspirado nos Prints) -->
+    <div class="products-grid" id="productsGrid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Floating Bar (Print Inspired) -->
+  <div class="mobile-bottom-bar" id="mobileBottomBar">
+    <div class="mobile-cart-info">
+      <span class="mobile-cart-count" id="mobileCartCount">0 itens</span>
+      <span class="mobile-cart-total" id="mobileCartTotal">R$ 0,00</span>
+    </div>
+    <button class="btn-mobile-checkout" id="btnMobileCheckout">
+      <span>Ver Carrinho</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M5 12h14"></path>
+        <path d="m12 5 7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Cart Drawer Overlay (Print 2 Style) -->
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay">
+    <aside class="cart-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <h3>Meu Carrinho <span id="drawerItemsCount" style="font-weight: 500; font-size: 14px; color: var(--text-muted);">(0 itens)</span></h3>
+        </div>
+        <button class="btn-close-drawer" id="btnCloseDrawer" aria-label="Fechar carrinho">✕</button>
+      </div>
+
+      <!-- Drawer Items List -->
+      <div class="drawer-body" id="cartDrawerItems">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Drawer Summary Footer -->
+      <div class="drawer-footer">
+        <div class="drawer-summary-row frete">
+          <span>Frete:</span>
+          <span id="drawerFreteVal">A calcular no checkout</span>
+        </div>
+        
+        <div class="drawer-summary-row total">
+          <span>Total:</span>
+          <span id="drawerTotalVal">R$ 0,00</span>
+        </div>
+
+        <div class="drawer-club-total-badge">
+          <span>Total com Preço Clube:</span>
+          <strong id="drawerClubTotalVal">R$ 0,00 👑</strong>
+        </div>
+
+        <button class="btn-drawer-checkout" id="btnDrawerCheckout">
+          Ir para o Carrinho & Checkout
+        </button>
+        <button class="btn-drawer-continue" id="btnDrawerContinue">
+          Continuar Comprando
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- App Script -->
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1118 @@
+/* ==========================================================================
+   DESIGN SYSTEM EXCLUSIVO - IMPÉRIO DO CONFEITEIRO 👑
+   Identidade Visual: Imperial Gold & Chocolate Real (Única e Diferenciada)
+   ========================================================================== */
+
+:root {
+  /* Paleta Oficial da Marca (Baseada na Logo) */
+  --primary-imperial: #451a03;      /* Chocolate Nobre Profundo */
+  --primary-imperial-hover: #291002;
+  --primary-caramel: #b45309;       /* Caramelo Queimado */
+  --primary-caramel-hover: #92400e;
+  --primary-cream: #fffbeb;         /* Creme Baunilha Suave */
+  
+  --gold-imperial: #f59e0b;         /* Ouro Real */
+  --gold-gradient: linear-gradient(135deg, #fde047 0%, #f59e0b 50%, #d97706 100%);
+  --gold-pill-bg: #fef3c7;
+  --gold-pill-border: #fcd34d;
+  --gold-text: #78350f;
+  
+  --success-checkout: #059669;      /* Verde Esmeralda para Conversão */
+  --success-hover: #047857;
+  --tag-discount: #dc2626;          /* Vermelho Nobre para % de Desconto */
+  
+  /* Superfícies & Neutros */
+  --bg-main: #fbfbfa;
+  --bg-card: #ffffff;
+  --text-title: #26160c;
+  --text-body: #475569;
+  --text-muted: #64748b;
+  --border-color: #f1ede7;
+  --border-card: #e7dfd5;
+  --border-focus: #d97706;
+
+  /* Formas & Sombras */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-full: 9999px;
+  
+  --shadow-subtle: 0 2px 6px rgba(69, 26, 3, 0.04);
+  --shadow-card: 0 8px 20px -4px rgba(69, 26, 3, 0.08), 0 2px 6px -2px rgba(69, 26, 3, 0.04);
+  --shadow-elevated: 0 16px 32px -8px rgba(69, 26, 3, 0.14);
+  --shadow-glow: 0 4px 20px rgba(245, 158, 11, 0.35);
+
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-body);
+  line-height: 1.5;
+  padding-bottom: 95px; /* Espaço para barra mobile */
+}
+
+/* ==========================================================================
+   TOP BAR & CABEÇALHO IMPERIAL
+   ========================================================================== */
+
+.top-announcement {
+  background: var(--primary-imperial);
+  color: #fff;
+  text-align: center;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.top-announcement span.highlight {
+  background: var(--gold-gradient);
+  color: #26160c;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.main-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-card);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: var(--shadow-subtle);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-logo-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(69, 26, 3, 0.18));
+  transition: transform 0.2s;
+}
+
+.brand-logo:hover .brand-logo-img {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--primary-imperial);
+  letter-spacing: -0.5px;
+}
+
+.brand-title small {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary-caramel);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* Header Search */
+.header-search {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .header-search {
+    display: block;
+  }
+}
+
+.header-search input {
+  width: 100%;
+  padding: 11px 16px 11px 42px;
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  outline: none;
+  background: var(--primary-cream);
+  color: var(--text-title);
+  transition: all 0.2s;
+}
+
+.header-search input:focus {
+  border-color: var(--primary-caramel);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(180, 83, 9, 0.12);
+}
+
+.search-icon-svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-caramel);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-header-cart {
+  position: relative;
+  background: var(--primary-cream);
+  color: var(--primary-imperial);
+  border: 1.5px solid rgba(180, 83, 9, 0.3);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-header-cart:hover {
+  background: var(--primary-imperial);
+  color: #fff;
+  border-color: var(--primary-imperial);
+  box-shadow: 0 4px 12px rgba(69, 26, 3, 0.2);
+}
+
+.cart-badge-count {
+  background: var(--primary-caramel);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.btn-header-cart:hover .cart-badge-count {
+  background: var(--gold-imperial);
+  color: #26160c;
+}
+
+/* Mobile Search Bar */
+.mobile-search-bar {
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--border-card);
+}
+
+@media (min-width: 768px) {
+  .mobile-search-bar {
+    display: none;
+  }
+}
+
+.mobile-search-bar input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  outline: none;
+  background: var(--primary-cream);
+  color: var(--text-title);
+}
+
+.mobile-search-wrapper {
+  position: relative;
+}
+
+.mobile-search-wrapper .search-icon-svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-caramel);
+}
+
+/* ==========================================================================
+   CARROSSEL DE BANNERS EXCLUSIVO
+   ========================================================================== */
+
+.hero-banner-section {
+  max-width: 1200px;
+  margin: 12px auto;
+  padding: 0 16px;
+}
+
+.banner-carousel-container {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  background: var(--primary-imperial);
+  aspect-ratio: 16 / 7.5;
+  min-height: 175px;
+}
+
+@media (max-width: 640px) {
+  .banner-carousel-container {
+    aspect-ratio: 16 / 9.5;
+  }
+}
+
+.banner-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.banner-slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 28px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.banner-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(41, 16, 2, 0.92) 0%, rgba(69, 26, 3, 0.65) 55%, transparent 100%);
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+}
+
+.banner-tag {
+  display: inline-block;
+  background: var(--gold-gradient);
+  color: #26160c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.banner-title {
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  letter-spacing: -0.3px;
+}
+
+@media (min-width: 768px) {
+  .banner-title {
+    font-size: 32px;
+  }
+}
+
+.banner-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-gradient);
+  color: #26160c;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.banner-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5);
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(41, 16, 2, 0.65);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.carousel-btn:hover {
+  background: var(--gold-imperial);
+  color: #26160c;
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+
+.carousel-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.carousel-dot.active {
+  background: var(--gold-imperial);
+  width: 24px;
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   CATEGORIAS (COM SETINHAS NO DESKTOP E SWIPE NO MOBILE)
+   ========================================================================== */
+
+.categories-nav-section {
+  max-width: 1200px;
+  margin: 16px auto 8px;
+  padding: 0 16px;
+}
+
+.categories-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.categories-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 6px 4px 10px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.categories-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Setas de rolagem para desktop */
+.categories-scroll-btn {
+  display: none;
+  background: #ffffff;
+  border: 1.5px solid var(--border-card);
+  color: var(--primary-imperial);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: 800;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  z-index: 5;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .categories-scroll-btn {
+    display: flex;
+  }
+}
+
+.categories-scroll-btn:hover {
+  background: var(--primary-imperial);
+  color: #fff;
+  border-color: var(--primary-imperial);
+  transform: scale(1.08);
+}
+
+.categories-scroll-btn.prev {
+  margin-right: 8px;
+}
+
+.categories-scroll-btn.next {
+  margin-left: 8px;
+}
+
+.category-chip {
+  background: #ffffff;
+  border: 1.5px solid var(--border-card);
+  color: var(--text-title);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--shadow-subtle);
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.category-chip:hover {
+  border-color: var(--primary-caramel);
+  color: var(--primary-caramel);
+  transform: translateY(-1px);
+}
+
+.category-chip.active {
+  background: var(--primary-imperial);
+  border-color: var(--primary-imperial);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(69, 26, 3, 0.25);
+}
+
+/* ==========================================================================
+   GRID DE PRODUTOS & CARDS EXCLUSIVOS IMPÉRIO DO CONFEITEIRO
+   ========================================================================== */
+
+.catalog-section {
+  max-width: 1200px;
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+.section-header-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+
+.section-header-title h2 {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--primary-imperial);
+  letter-spacing: -0.4px;
+}
+
+.section-header-title span {
+  font-size: 12px;
+  color: var(--primary-caramel);
+  font-weight: 700;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+}
+
+/* CARD DE PRODUTO PERSONALIZADO */
+.product-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow-subtle);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary-caramel);
+  box-shadow: var(--shadow-card);
+}
+
+/* Badges Nobres */
+.product-top-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--primary-imperial);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-bottom-right-radius: var(--radius-sm);
+  z-index: 5;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.product-top-badge.warning {
+  background: #ea580c;
+}
+
+.product-top-badge.hot {
+  background: #b91c1c;
+}
+
+/* Imagem do Produto */
+.product-image-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.product-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover .product-image-wrap img {
+  transform: scale(1.08);
+}
+
+/* Informações do Produto */
+.product-info {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.star-icon {
+  color: #f59e0b;
+  font-size: 13px;
+}
+
+.rating-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 3px;
+  font-weight: 700;
+}
+
+.product-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-title);
+  line-height: 1.35;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 36px;
+}
+
+.product-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.old-price {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+.discount-tag {
+  background: var(--tag-discount);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25);
+}
+
+/* TARJA PREÇO ATACADO / CLUBE IMPERIAL */
+.club-price-pill {
+  background: var(--gold-gradient);
+  border: 1px solid #f59e0b;
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-bottom: 10px;
+  min-height: 32px;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.18);
+}
+
+.club-price-val {
+  font-size: 15px;
+  font-weight: 900;
+  color: #26160c;
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+}
+
+.club-label-tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #78350f;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+/* Controles de Quantidade e Adicionar */
+.product-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1.5px solid var(--primary-imperial);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 36px;
+  background: #fff;
+}
+
+.qty-btn {
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 100%;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--primary-imperial);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.qty-btn:hover {
+  background: var(--primary-cream);
+}
+
+.qty-input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--primary-imperial);
+  outline: none;
+}
+
+.btn-add-cart {
+  background: var(--primary-imperial);
+  color: #fff;
+  border: none;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 10px rgba(69, 26, 3, 0.2);
+  transition: all 0.2s;
+}
+
+.btn-add-cart:hover {
+  background: var(--primary-caramel);
+  transform: translateY(-1px);
+}
+
+.btn-add-cart.added {
+  background: var(--success-checkout);
+}
+
+/* ==========================================================================
+   BARRA FLUTUANTE MOBILE
+   ========================================================================== */
+
+.mobile-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1.5px solid var(--border-card);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 85;
+  box-shadow: 0 -6px 20px rgba(69, 26, 3, 0.1);
+}
+
+@media (min-width: 1024px) {
+  .mobile-bottom-bar {
+    display: none;
+  }
+}
+
+.mobile-cart-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-cart-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.mobile-cart-total {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--primary-imperial);
+}
+
+.btn-mobile-checkout {
+  background: var(--success-checkout);
+  color: #fff;
+  border: none;
+  padding: 11px 22px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
+  transition: all 0.2s;
+}
+
+.btn-mobile-checkout:hover {
+  background: var(--success-hover);
+}
+
+/* ==========================================================================
+   GAVETA LATERAL DO CARRINHO (CART DRAWER)
+   ========================================================================== */
+
+.cart-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(41, 16, 2, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cart-drawer-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 0 35px rgba(0,0,0,0.3);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cart-drawer-overlay.active .cart-drawer {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1.5px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary-cream);
+}
+
+.drawer-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-title-wrap h3 {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--primary-imperial);
+}
+
+.btn-close-drawer {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--primary-caramel);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+.cart-item-card {
+  display: flex;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.cart-item-img {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-card);
+  object-fit: contain;
+  padding: 4px;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.cart-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.cart-item-category {
+  font-size: 10px;
+  color: var(--primary-caramel);
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.cart-item-title {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 2px 0 6px;
+  color: var(--text-title);
+}
+
+.cart-item-price-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-pill-bg);
+  border: 1px solid var(--gold-pill-border);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--gold-text);
+  margin-bottom: 8px;
+}
+
+.cart-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-cart-remove {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.drawer-footer {
+  padding: 18px 20px;
+  background: #fafaf9;
+  border-top: 1.5px solid var(--border-card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.drawer-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.drawer-summary-row.frete {
+  color: var(--primary-caramel);
+  font-weight: 800;
+}
+
+.drawer-summary-row.total {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--primary-imperial);
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-card);
+}
+
+.drawer-club-total-badge {
+  background: var(--gold-gradient);
+  border: 1px solid #f59e0b;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 900;
+  color: #26160c;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
+}
+
+.btn-drawer-checkout {
+  background: var(--success-checkout);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  transition: all 0.2s;
+}
+
+.btn-drawer-checkout:hover {
+  background: var(--success-hover);
+}
+
+.btn-drawer-continue {
+  background: #fff;
+  color: var(--primary-imperial);
+  border: 1.5px solid var(--border-card);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
