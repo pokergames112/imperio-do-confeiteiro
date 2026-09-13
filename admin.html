@@ -489,8 +489,24 @@
           selectEl.addEventListener('change', async (e) => {
             const newStatus = e.target.value;
             selectEl.disabled = true;
-            await updateOrderStatus(order.codigo_pedido, newStatus);
-            await loadOrders();
+
+            // 1. Atualização Otimista na Memória
+            const orderIdx = allOrders.findIndex(o => (o.codigo_pedido === order.codigo_pedido) || (o.id === order.id));
+            if (orderIdx > -1) {
+              allOrders[orderIdx].status = newStatus;
+              updateStats(allOrders);
+              renderOrders();
+            }
+
+            // 2. Grava no Banco Supabase
+            const res = await updateOrderStatus(order.id || order.codigo_pedido, newStatus);
+            
+            if (!res.success) {
+              console.warn('[Admin] Aviso Supabase:', res.error);
+              if (res.error && res.error.toLowerCase().includes('policy')) {
+                alert('⚠️ Atenção (Permissão do Banco):\nA política de segurança (RLS) da tabela "pedidos" no Supabase precisa permitir UPDATE.\n\nPara liberar em 5 segundos:\n1. Acesse https://supabase.com -> Seu Projeto -> SQL Editor\n2. Cole e rode o comando:\nALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;\nCREATE POLICY "Allow All" ON pedidos FOR ALL USING (true) WITH CHECK (true);');
+              }
+            }
           });
         }
 

@@ -71,20 +71,30 @@ export async function checkOrderStatus(orderCode) {
 /**
  * Atualiza o status do pedido (ex: Aguardando Pix, Pago / Confirmado, Em Separação, Saiu para Entrega, Concluído, Cancelado)
  */
-export async function updateOrderStatus(orderCode, newStatus) {
+export async function updateOrderStatus(orderIdentifier, newStatus) {
   try {
-    const { data, error } = await supabase
-      .from('pedidos')
-      .update({ status: newStatus })
-      .eq('codigo_pedido', orderCode)
-      .select();
+    const cleanId = String(orderIdentifier || '').replace(/^#/, '').trim();
+    
+    // Tenta atualizar buscando por codigo_pedido ou por id
+    let query = supabase.from('pedidos').update({ status: newStatus });
+    
+    if (!isNaN(cleanId) && !cleanId.startsWith('IC-')) {
+      query = query.eq('id', Number(cleanId));
+    } else {
+      query = query.eq('codigo_pedido', cleanId);
+    }
+
+    const { data, error } = await query.select();
 
     if (error) {
+      console.error('[Supabase] Erro ao atualizar status:', error);
       return { success: false, error: error.message };
     }
 
+    console.log('[Supabase] Status atualizado no banco com sucesso:', data);
     return { success: true, data };
   } catch (err) {
+    console.error('[Supabase] Exceção ao atualizar status:', err);
     return { success: false, error: err.message };
   }
 }
