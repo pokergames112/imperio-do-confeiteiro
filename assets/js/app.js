@@ -276,16 +276,17 @@ function updateCartUI(state) {
 
   // Update Drawer Totals
   if (drawerFreteVal) {
-    if (state.shippingCost > 0) {
-      drawerFreteVal.textContent = formatCurrency(state.shippingCost);
-    } else if (state.deliveryType === 'pickup') {
-      drawerFreteVal.textContent = 'Retirar (Grátis)';
+    if (state.deliveryType === 'pickup') {
+      drawerFreteVal.textContent = 'Retirar no Depósito (Grátis)';
     } else if (state.subtotal >= 150) {
       drawerFreteVal.textContent = 'Grátis (Acima R$150)';
+    } else if (state.shipping && state.shippingCost > 0) {
+      drawerFreteVal.textContent = formatCurrency(state.shippingCost);
     } else {
       drawerFreteVal.textContent = 'A calcular no checkout';
     }
   }
+
 
   if (drawerTotalVal) drawerTotalVal.textContent = formatCurrency(state.total);
 

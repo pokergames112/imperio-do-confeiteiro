@@ -3,10 +3,11 @@ import { products } from './products.js';
 class CartStore {
   constructor() {
     this.items = this.sanitizeItems(JSON.parse(localStorage.getItem('imperio_cart') || '[]'));
-    this.shipping = JSON.parse(localStorage.getItem('imperio_shipping') || 'null');
+    this.shipping = null; // Frete inicia estritamente zerado/nulo ate o usuario calcular o CEP
     this.deliveryType = localStorage.getItem('imperio_delivery_type') === 'pickup' ? 'pickup' : 'receive';
     this.listeners = [];
   }
+
 
   // Sanitização e validação matemática de todos os itens contra o catálogo oficial
   sanitizeItems(rawItems) {

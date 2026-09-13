@@ -80,18 +80,19 @@ function renderSummary(state) {
   
   if (checkoutShipping) {
     if (state.deliveryType === 'pickup') {
-      checkoutShipping.textContent = 'Retirar (Grátis)';
-    } else if (state.shippingCost > 0) {
-      checkoutShipping.textContent = formatCurrency(state.shippingCost);
+      checkoutShipping.textContent = 'Retirar no Depósito (Grátis)';
     } else if (state.subtotal >= 150) {
       checkoutShipping.textContent = 'Grátis (Acima R$150)';
+    } else if (state.shipping && state.shippingCost > 0) {
+      checkoutShipping.textContent = formatCurrency(state.shippingCost);
     } else {
-      checkoutShipping.textContent = 'Digite seu CEP';
+      checkoutShipping.textContent = 'Calcular pelo CEP';
     }
   }
 
   if (checkoutTotal) checkoutTotal.textContent = formatCurrency(state.total);
 }
+
 
 
 function setupDeliveryTabs() {
