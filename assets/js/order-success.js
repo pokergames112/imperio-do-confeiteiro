@@ -107,6 +107,8 @@ ${ePin} *Endereço:* ${order.address}
 ----------------------------------------
 _Pedido registrado e salvo no sistema da Império do Confeiteiro_`;
 
-  const storeWhatsAppNumber = '5581989859211';
+  // Número de WhatsApp para teste (Igor - PRIME RANK)
+  // Quando for para produção final com a cliente, trocar de volta para '5581989859211'
+  const storeWhatsAppNumber = '5581989780241';
   btnWhatsApp.href = `https://wa.me/${storeWhatsAppNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 });
