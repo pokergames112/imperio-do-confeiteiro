@@ -726,43 +726,8 @@ body {
   box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25);
 }
 
-/* TARJA PREÇO ATACADO / CLUBE IMPERIAL */
-.club-price-pill {
-  background: var(--gold-gradient);
-  border: 1px solid #f59e0b;
-  border-radius: var(--radius-sm);
-  padding: 5px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  margin-bottom: 10px;
-  min-height: 32px;
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.18);
-}
-
-.club-price-val {
-  font-size: 15px;
-  font-weight: 900;
-  color: #26160c;
-  letter-spacing: -0.4px;
-  white-space: nowrap;
-}
-
-.club-label-tag {
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  background: rgba(255, 255, 255, 0.5);
-  color: #78350f;
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  white-space: nowrap;
-  line-height: 1.2;
-}
-
 /* Controles de Quantidade e Adicionar */
+
 .product-actions {
   margin-top: auto;
   display: flex;
@@ -1071,20 +1036,6 @@ body {
   color: var(--primary-imperial);
   padding-top: 6px;
   border-top: 1px dashed var(--border-card);
-}
-
-.drawer-club-total-badge {
-  background: var(--gold-gradient);
-  border: 1px solid #f59e0b;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  font-weight: 900;
-  color: #26160c;
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
 }
 
 .btn-drawer-checkout {

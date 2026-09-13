@@ -446,20 +446,6 @@
   border-top: 1px dashed var(--border-card);
 }
 
-.summary-club-badge {
-  background: var(--gold-gradient);
-  border: 1px solid #f59e0b;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  margin: 14px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 900;
-  color: #26160c;
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
-}
 
 .btn-finalize-order {
   width: 100%;

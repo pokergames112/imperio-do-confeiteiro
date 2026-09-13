@@ -9,7 +9,6 @@ const checkoutItemsList = document.getElementById('checkoutItemsList');
 const checkoutSubtotal = document.getElementById('checkoutSubtotal');
 const checkoutShipping = document.getElementById('checkoutShipping');
 const checkoutTotal = document.getElementById('checkoutTotal');
-const checkoutClubTotal = document.getElementById('checkoutClubTotal');
 
 // Delivery Elements
 const tabReceive = document.getElementById('tabReceive');
@@ -156,7 +155,7 @@ function setupShippingEvents() {
 
 function renderShippingOptions(data) {
   if (!shippingOptionsContainer) return;
-  const isFree = cart.getState().subtotalClub >= 150;
+  const isFree = cart.getState().subtotal >= 150;
   const finalPrice = isFree ? 0 : data.shippingValue;
 
   shippingOptionsContainer.innerHTML = `
@@ -306,7 +305,7 @@ function setupFinalizeOrder() {
     const state = cart.getState();
 
     // 1. Validação de Carrinho Vazio
-    if (!state.items || state.items.length === 0 || state.subtotalClub <= 0) {
+    if (!state.items || state.items.length === 0 || state.subtotal <= 0) {
       alert('Seu carrinho está vazio ou com valor inválido. Redirecionando...');
       window.location.href = 'index.html';
       return;

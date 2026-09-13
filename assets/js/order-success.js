@@ -36,12 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
     titleSpan.textContent = `${item.qty}x ${item.name}`;
 
     const priceStrong = document.createElement('strong');
-    priceStrong.textContent = formatCurrency((item.price || item.clubPrice || 0) * item.qty);
+    priceStrong.textContent = formatCurrency((item.price || 0) * item.qty);
 
     row.appendChild(titleSpan);
     row.appendChild(priceStrong);
     itemsContainer.appendChild(row);
   });
+
 
 
   const pixBox = document.getElementById('successPixBox');
@@ -272,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const eCard = '\u{1F4B3}';
   const ePin = '\u{1F4CD}';
 
-  const itemsText = (order.items || []).map(i => `• ${i.qty}x ${i.name} (${formatCurrency((i.price || i.clubPrice || 0) * i.qty)})`).join('\n');
+  const itemsText = (order.items || []).map(i => `• ${i.qty}x ${i.name} (${formatCurrency((i.price || 0) * i.qty)})`).join('\n');
 
   const whatsappMessage = 
 `${eCake} *PEDIDO #${orderCode} - IMPÉRIO DO CONFEITEIRO*

@@ -18,7 +18,6 @@ const cartDrawerItems = document.getElementById('cartDrawerItems');
 const drawerItemsCount = document.getElementById('drawerItemsCount');
 const drawerFreteVal = document.getElementById('drawerFreteVal');
 const drawerTotalVal = document.getElementById('drawerTotalVal');
-const drawerClubTotalVal = document.getElementById('drawerClubTotalVal');
 const btnCloseDrawer = document.getElementById('btnCloseDrawer');
 const btnHeaderCart = document.getElementById('btnHeaderCart');
 const headerCartCount = document.getElementById('headerCartCount');
@@ -160,11 +159,6 @@ function renderProducts() {
   filtered.forEach(product => {
     const card = document.createElement('div');
     card.className = 'product-card';
-
-    // Cálculo dinâmico do percentual de desconto
-    const discountPercent = (product.oldPrice && product.oldPrice > product.clubPrice)
-      ? Math.round(((product.oldPrice - product.clubPrice) / product.oldPrice) * 100)
-      : 0;
 
     const badgeHtml = product.badge ? `
       <span class="product-top-badge ${product.badgeType || ''}">${product.badge}</span>
