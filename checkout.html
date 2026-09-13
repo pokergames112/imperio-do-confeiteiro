@@ -181,17 +181,17 @@
               </div>
             </div>
 
-            <!-- Pix Simulation Area -->
-            <div class="pix-simulation-box" id="pixSimulationBox">
-              <h4 style="font-weight: 800; color: var(--primary-imperial); margin-bottom: 4px;">Pague com Pix (Aprovação Instantânea)</h4>
-              <p style="font-size: 12px; color: var(--text-muted);">Escaneie o QR Code abaixo no app do seu banco:</p>
-              
-              <img id="pixQrImg" src="" alt="QR Code Pix" class="pix-qr-img" />
-              
-              <div class="pix-copia-cola-box">
-                <input type="text" id="pixKeyInput" readonly value="Carregando chave..." />
-                <button class="btn-copy-pix" id="btnCopyPix">Copiar</button>
+            <!-- Pix Info Area -->
+            <div class="pix-simulation-box" id="pixSimulationBox" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 16px; border-radius: var(--radius-sm); margin-top: 14px;">
+              <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #166534; font-size: 14px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+                <span>Pagamento via Pix (Valor Travado e Seguro)</span>
               </div>
+              <p style="font-size: 13px; color: #15803d; margin-top: 6px; line-height: 1.5;">
+                Ao clicar em <strong>"Finalizar e Gerar Pix"</strong>, você receberá na próxima tela o <strong>QR Code oficial</strong> e o <strong>Código Copia e Cola</strong> com o valor exato do seu pedido.
+              </p>
             </div>
           </div>
         </div>

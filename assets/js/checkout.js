@@ -61,7 +61,6 @@ function initCheckout() {
   setupShippingEvents();
   setupPaymentEvents();
   setupFinalizeOrder();
-  updatePixBox(state.totalClub);
 }
 
 function renderSummary(state) {
@@ -183,29 +182,15 @@ function setupPaymentEvents() {
       card.classList.add('selected');
       selectedPayment = card.dataset.payment;
 
-      if (selectedPayment === 'pix') {
-        pixSimulationBox.style.display = 'block';
-        updatePixBox(cart.getState().totalClub);
-      } else {
-        pixSimulationBox.style.display = 'none';
+      if (pixSimulationBox) {
+        if (selectedPayment === 'pix') {
+          pixSimulationBox.style.display = 'block';
+        } else {
+          pixSimulationBox.style.display = 'none';
+        }
       }
     });
   });
-
-  if (btnCopyPix && pixKeyInput) {
-    btnCopyPix.addEventListener('click', () => {
-      navigator.clipboard.writeText(pixKeyInput.value);
-      btnCopyPix.textContent = 'Copiado! ✓';
-      setTimeout(() => { btnCopyPix.textContent = 'Copiar'; }, 2000);
-    });
-  }
-}
-
-function updatePixBox(total) {
-  if (!pixQrImg || !pixKeyInput) return;
-  const pix = generatePixPayload({ amount: total });
-  pixQrImg.src = pix.qrCodeUrl;
-  pixKeyInput.value = pix.payload;
 }
 
 // Funções de Sanitização e Proteção contra Adulteração

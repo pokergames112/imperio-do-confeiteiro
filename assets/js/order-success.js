@@ -70,20 +70,35 @@ document.addEventListener('DOMContentLoaded', () => {
       statusIcon.textContent = '🎉';
     }
 
-    if (pixBox) {
-      pixBox.style.background = '#f0fdf4';
-      pixBox.style.borderColor = '#86efac';
-      pixBox.innerHTML = `
-        <div style="padding: 24px; text-align: center;">
-          <div style="font-size: 50px; margin-bottom: 12px; animation: bounce 1s infinite alternate;">🎉</div>
-          <h3 style="font-weight: 900; color: #15803d; font-size: 20px;">Pagamento Identificado e Confirmado!</h3>
-          <p style="font-size: 14px; color: #166534; margin-top: 6px; max-width: 480px; margin-left: auto; margin-right: auto;">
-            Seu pedido <strong>#${orderCode}</strong> já foi liberado e entrou imediatamente na esteira de separação do nosso depósito.
-          </p>
-        </div>
-      `;
+    // Atualiza a Linha do Tempo (Tracker)
+    const dot2 = document.getElementById('stepDot2');
+    const label2 = document.getElementById('stepLabel2');
+    const dot3 = document.getElementById('stepDot3');
+    const label3 = document.getElementById('stepLabel3');
+    const btnWhatsAppText = document.getElementById('btnWhatsAppText');
+
+    if (dot2) {
+      dot2.style.background = '#10b981';
+      dot2.textContent = '✓';
+    }
+    if (label2) {
+      label2.style.color = '#15803d';
+      label2.textContent = 'Pago ✓';
+    }
+    if (dot3) {
+      dot3.style.background = '#f59e0b';
+      dot3.style.color = '#fff';
+    }
+    if (label3) {
+      label3.style.color = '#b45309';
+      label3.style.fontWeight = '700';
+      label3.textContent = 'Em Separação';
+    }
+    if (btnWhatsAppText) {
+      btnWhatsAppText.textContent = '📦 Acompanhar Separação no WhatsApp';
     }
   }
+
 
   // Pix Logic Oficial Banco Central
   if (order.paymentMethod.toLowerCase().includes('pix')) {
